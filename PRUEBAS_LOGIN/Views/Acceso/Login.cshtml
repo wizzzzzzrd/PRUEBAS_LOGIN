@@ -1,0 +1,91 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <!-- Agregar Bootstrap 5 desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+
+    <!-- Contenedor principal -->
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="login-container bg-white p-5 rounded-4 shadow-lg" style="width: 100%; max-width: 400px;">
+
+            <!-- Logo centrado y circular arriba del texto -->
+            <div class="text-center mb-4">
+                <!-- Imagen del logo con clase para hacerlo circular -->
+                <img src="#" alt="Logo" style="max-width: 150px;">
+            </div>
+
+            <!-- Título principal -->
+            <h2 class="text-center mb-4 text-primary">Iniciar Sesión</h2>
+
+            <!-- Texto muy pequeño debajo -->
+            <p class="text-center text-muted" style="font-size: 0.75rem;">
+                Bienvenido al sistema de facturacion de FARMA AZTECA, Captura tus credenciales correctamente.
+            </p>
+            <!--  Alerta para credenciales erroneas -->
+            @if (ViewData["Mensaje"] != null)
+            {
+                var mensaje = ViewData["Mensaje"].ToString();
+
+                // Si el mensaje contiene "Correo", mostramos la alerta amarilla
+                if (mensaje.Contains("Correo"))
+                {
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        @ViewData["Mensaje"]
+                    </div>
+                }
+                // En caso de otro tipo de mensaje, usamos una alerta general
+                else if (mensaje.Contains("Clave"))
+                {
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        @ViewData["Mensaje"]
+                    </div>
+                }
+                // Si el mensaje contiene "Clave", mostramos la alerta roja
+
+                else
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @ViewData["Mensaje"]
+                    </div>
+                    
+                }
+            }
+
+            <!-- Formulario de inicio de sesión -->
+            <form action="@Url.Action("Login", "Acceso")" method="post">
+                <!-- Correo -->
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="correo" placeholder="Correo electrónico" name ="Correo" required>
+                    <label for="correo">Correo electrónico</label>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="clave" placeholder="Contraseña" name="Clave" required>
+                    <label for="clave">Contraseña</label>
+                </div>
+
+                <!-- Botón de iniciar sesión -->
+                <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+            </form>
+
+            <!-- Vinculo para crear cuenta -->
+            <div class="mt-3 text-center">
+                <p>¿No tienes cuenta? <a href="@Url.Action("Registrar", "Acceso")" class="text-primary text-decoration-none">¡Crea una ahora!</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script></body>
+</html>
