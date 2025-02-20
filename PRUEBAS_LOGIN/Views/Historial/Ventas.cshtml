@@ -1,0 +1,306 @@
+﻿@page
+@model PRUEBAS_LOGIN.Views.Historial.VentasModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Panel de Cliente - Datos Fiscales</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.snow.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.bubble.css" rel="stylesheet" />
+    <link href="~/vendor/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="~/vendor/simple-datatables/style.css" rel="stylesheet" />
+
+    <!-- Agregar Bootstrap 5 desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/css/style.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="assets/img/logo.png" alt="Imagen grande" class="img-fluid h-75">
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Buscar" title="Ingrese palabra clave">
+                <button type="submit" title="Buscar"><i class="bi bi-search"></i></button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>Kevin Anderson</h6>
+                            <span>Usuario</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                <i class="bi bi-person"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                <i class="bi bi-gear"></i>
+                                <span>Configuración de la Cuenta</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                                <i class="bi bi-receipt"></i>
+                                <span>Facturación</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Salir</span>
+                            </a>
+                        </li>
+
+                    </ul><!-- End Profile Dropdown Items -->
+
+                </li><!-- End Profile Nav -->
+            </ul>
+        </nav><!-- End Icons Navigation -->
+    </header><!-- End Header -->
+
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="bi bi-grid"></i>
+                    <span>Panel de Control</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-heading">Páginas</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Perfil", "Usuario")">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Fiscales", "Facturacion")">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Facturación</span>
+                </a>
+            </li><!-- End F.A.Q Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Ventas", "Historial")">
+                    <i class="bi bi-currency-dollar"></i>
+                    <span>Ventas</span>
+                </a>
+            </li><!-- End Contact Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Documentos", "Historial")">
+                    <i class="bi bi-file-earmark"></i>
+                    <span>Documentos Emitidos</span>
+                </a>
+            </li><!-- End Error 404 Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Registrar", "Acceso")">
+                    <i class="bi bi-card-list"></i>
+                    <span>Registro</span>
+                </a>
+            </li><!-- End Register Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Login", "Acceso")">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Inicio de Sesión</span>
+                </a>
+            </li><!-- End Login Page Nav -->
+        </ul>
+    </aside><!-- End Sidebar-->
+    <main id="main" class="main">
+
+
+        <div class="pagetitle">
+            <h1>Ventas</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+                    <li class="breadcrumb-item">Páginas</li>
+                    <li class="breadcrumb-item active">Ventas</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <!-- Tabla de ventqas -->
+        <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column">
+                <!-- Botón para seleccionar/deseleccionar todo -->
+                <div class="mb-3">
+                    <button class="btn btn-primary btn-sm" id="toggleSelectButton">Seleccionar todo</button>
+                </div>
+
+                <!-- Tabla -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Selección</th>
+                                <th>Ticket</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Fila 1 -->
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check1">
+                                    </div>
+                                </td>
+                                <td>TICKET-001</td>
+                                <td>$100.00</td>
+                            </tr>
+                            <!-- Fila 2 -->
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check2">
+                                    </div>
+                                </td>
+                                <td>TICKET-002</td>
+                                <td>$150.00</td>
+                            </tr>
+                            <!-- Fila 3 -->
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check3">
+                                    </div>
+                                </td>
+                                <td>TICKET-003</td>
+                                <td>$200.00</td>
+                            </tr>
+                            <!-- Fila 4 -->
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check4">
+                                    </div>
+                                </td>
+                                <td>TICKET-004</td>
+                                <td>$250.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script para alternar selección -->
+        <script>
+            const toggleSelectButton = document.getElementById('toggleSelectButton');
+            const checkboxes = document.querySelectorAll('.form-check-input');
+
+            toggleSelectButton.addEventListener('click', () => {
+              // Verifica si al menos un checkbox no está seleccionado
+              const isAtLeastOneUnchecked = [...checkboxes].some(checkbox => !checkbox.checked);
+
+              // Selecciona o deselecciona todos los checkboxes
+              checkboxes.forEach(checkbox => {
+                checkbox.checked = isAtLeastOneUnchecked;
+              });
+
+              // Cambia el texto del botón
+              toggleSelectButton.textContent = isAtLeastOneUnchecked ? 'Deseleccionar todo' : 'Seleccionar todo';
+            });
+        </script>
+    </main>
+    <!-- End #main -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            <!-- All the links in the footer should remain intact. -->
+            <!-- You can delete the links only if you purchased the pro version. -->
+            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+    <!-- Script Js -->
+    <script src="~/js/main.js"></script>
+
+    <!-- Vendor JS Files -->
+    <script src="~/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/vendor/echarts/echarts.min.js"></script>
+    <script src="~/vendor/quill/quill.js"></script>
+    <script src="~/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/vendor/tinymce/tinymce.min.js"></script>
+
+</body>
+
+</html>

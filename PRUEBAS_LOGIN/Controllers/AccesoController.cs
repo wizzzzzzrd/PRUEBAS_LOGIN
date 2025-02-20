@@ -15,7 +15,7 @@ namespace PRUEBAS_LOGIN.Controllers
     public class AccesoController : Controller
     {
         //Conexion a la base de datos
-        static string cadena = "Data Source=DESKTOP-HF98NSE\\SQLEXPRESS;Initial Catalog=DB_ACCESO;Integrated Security=true";
+        static string cadena = "Data Source=DESKTOP-HF98NSE\\SQLEXPRESS;Initial Catalog=DB_FACTURA;Integrated Security=true";
         
 
         public IActionResult Login()
@@ -71,58 +71,73 @@ namespace PRUEBAS_LOGIN.Controllers
         [Obsolete]
         public IActionResult Login(Usuario oUsuario)
         {
-            // Asegúrate de que la contraseña sea segura, al convertirla a SHA256
-            oUsuario.Clave = ConvertirSha256(oUsuario.Clave);
-
-            using (SqlConnection cn = new SqlConnection(cadena))
+            try
             {
-                SqlCommand cmd = new SqlCommand("sp_ValidarUsuario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Correo", oUsuario.Correo);
-                cmd.Parameters.AddWithValue("@Clave", oUsuario.Clave);
+                // Asegúrate de que la contraseña sea segura, al convertirla a SHA256
+                oUsuario.Clave = ConvertirSha256(oUsuario.Clave);
 
-                cn.Open();
-
-                // Ejecutamos el procedimiento almacenado y obtenemos el resultado
-                int resultado = Convert.ToInt32(cmd.ExecuteScalar());
-
-                // Verificamos el resultado del procedimiento almacenado
-                if (resultado > 0)
+                using (SqlConnection cn = new SqlConnection(cadena))
                 {
-                    // Si el resultado es mayor que 0, el usuario es válido
-                    oUsuario.IdUsuario = resultado;
+                    SqlCommand cmd = new SqlCommand("sp_ValidarUsuario", cn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Correo", oUsuario.Correo);
+                    cmd.Parameters.AddWithValue("@Clave", oUsuario.Clave);
 
-                    // Aquí se serializa el objeto 'Usuario' y se guarda en la sesión
-                    HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(oUsuario));
+                    cn.Open();
 
-                    // Asegúrate de que la sesión esté activa antes de redirigir
-                    if (HttpContext.Session.GetString("usuario") != null)
+                    // Ejecutamos el procedimiento almacenado y leemos el resultado
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        // Si por alguna razón la sesión no se guardó correctamente
-                        ViewData["Mensaje"] = "Hubo un problema al iniciar sesión. Intenta nuevamente.";
-                        return View();
-                    }
-                }
-                else if (resultado == -1)
-                {
-                    // Si el procedimiento almacenado devuelve -1, la clave es incorrecta
-                    ViewData["Mensaje"] = "La clave es incorrecta. Intenta nuevamente.";
-                }
-                else if (resultado == -2)
-                {
-                    // Si el procedimiento almacenado devuelve -2, el correo es incorrecto
-                    ViewData["Mensaje"] = "Correo electrónico incorrecto. Por favor, revisa tu correo.";
-                }
+                        if (reader.Read()) // Si hay datos
+                        {
+                            int resultado = reader.GetInt32(0); // IdUsuario o código de error
+                            string nombre = reader.IsDBNull(1) ? null : reader.GetString(1); // Nombre
 
-                // Asegúrate de que ViewData["Mensaje"] está asignado antes de retornar la vista
+                            if (resultado > 0)
+                            {
+                                // Si el resultado es mayor que 0, el usuario es válido
+                                oUsuario.IdUsuario = resultado;
+                                oUsuario.Nombre = nombre; // Asignar el nombre recuperado
+
+                                // Aquí se serializa el objeto 'Usuario' y se guarda en la sesión
+                                HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(oUsuario));
+
+                                // Asegúrate de que la sesión esté activa antes de redirigir
+                                if (HttpContext.Session.GetString("usuario") != null)
+                                {
+                                    return RedirectToAction("Index", "Home");
+                                }
+                                else
+                                {
+                                    // Si por alguna razón la sesión no se guardó correctamente
+                                    ViewData["Mensaje"] = "Hubo un problema al iniciar sesión. Intenta nuevamente.";
+                                    return View();
+                                }
+                            }
+                            else if (resultado == -1)
+                            {
+                                // Si el procedimiento almacenado devuelve -1, la clave es incorrecta
+                                ViewData["Mensaje"] = "La clave es incorrecta. Intenta nuevamente.";
+                            }
+                            else if (resultado == -2)
+                            {
+                                // Si el procedimiento almacenado devuelve -2, el correo es incorrecto
+                                ViewData["Mensaje"] = "Correo electrónico incorrecto. Por favor, revisa tu correo.";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Captura la excepción y muestra un mensaje de error
+                ViewData["Mensaje"] = "Ocurrió un error al iniciar sesión: " + ex.Message;
                 return View();
             }
+
+            // Asegúrate de que ViewData["Mensaje"] está asignado antes de retornar la vista
+            return View();
         }
- 
 
         public static string ConvertirSha256(string texto)
         {

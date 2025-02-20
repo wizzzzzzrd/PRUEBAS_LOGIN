@@ -20,13 +20,35 @@ namespace PRUEBAS_LOGIN.Controllers
 
         public IActionResult Index()
         {
+            // Recuperar el objeto oUsuario de la sesión
+            var oUsuarioJson = HttpContext.Session.GetString("usuario");
+
+            if (string.IsNullOrEmpty(oUsuarioJson))
+            {
+                // Si no hay sesión, redirigir al login
+                return RedirectToAction("Login", "Acceso");
+            }
+
+            // Deserializar el objeto oUsuario
+            var oUsuario = JsonConvert.DeserializeObject<Usuario>(oUsuarioJson);
+
+            // Verificar el valor de oUsuario.Nombre
+            if (string.IsNullOrEmpty(oUsuario.Nombre))
+            {
+                Console.WriteLine("El nombre del usuario está vacío o nulo.");
+            }
+            else
+            {
+                Console.WriteLine($"Nombre del usuario: {oUsuario.Nombre}");
+            }
+
+            // Pasar el nombre del usuario a la vista
+            ViewBag.NombreUsuario = oUsuario.Nombre;
+
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        
 
         public IActionResult CerrarSesion()
         {

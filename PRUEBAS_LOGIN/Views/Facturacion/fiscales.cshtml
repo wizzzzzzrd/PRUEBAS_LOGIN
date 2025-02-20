@@ -1,0 +1,587 @@
+﻿@{
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Panel de Cliente - Datos Fiscales</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.snow.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.bubble.css" rel="stylesheet" />
+    <link href="~/vendor/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="~/vendor/simple-datatables/style.css" rel="stylesheet" />
+
+    <!-- Agregar Bootstrap 5 desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="assets/img/logo.png" alt="Imagen grande" class="img-fluid h-75">
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Buscar" title="Ingrese palabra clave">
+                <button type="submit" title="Buscar"><i class="bi bi-search"></i></button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>Kevin Anderson</h6>
+                            <span>Usuario</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                <i class="bi bi-person"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                <i class="bi bi-gear"></i>
+                                <span>Configuración de la Cuenta</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                                <i class="bi bi-receipt"></i>
+                                <span>Facturación</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Salir</span>
+                            </a>
+                        </li>
+
+                    </ul><!-- End Profile Dropdown Items -->
+
+                </li><!-- End Profile Nav -->
+            </ul>
+        </nav><!-- End Icons Navigation -->
+    </header><!-- End Header -->
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="bi bi-grid"></i>
+                    <span>Panel de Control</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-heading">Páginas</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Perfil", "Usuario")">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Fiscales", "Facturacion")">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Facturación</span>
+                </a>
+            </li><!-- End F.A.Q Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Ventas", "Historial")">
+                    <i class="bi bi-currency-dollar"></i>
+                    <span>Ventas</span>
+                </a>
+            </li><!-- End Contact Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Documentos", "Historial")">
+                    <i class="bi bi-file-earmark"></i>
+                    <span>Documentos Emitidos</span>
+                </a>
+            </li><!-- End Error 404 Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Registrar", "Acceso")">
+                    <i class="bi bi-card-list"></i>
+                    <span>Registro</span>
+                </a>
+            </li><!-- End Register Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Login", "Acceso")">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Inicio de Sesión</span>
+                </a>
+            </li><!-- End Login Page Nav -->
+        </ul>
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Facturación</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+                    <li class="breadcrumb-item">Usuarios</li>
+                    <li class="breadcrumb-item active">Facturación</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <!-- Formulario de Captura de datos fiscales -->
+        <!-- Fondo brillante de color azul -->
+        <!-- Tarjeta -->
+        <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                <h1 class="text-center mb-2 mt-5">Captura de Datos Fiscales</h1>
+                <p class="text-center text-muted" style="font-size: 0.6rem; margin-bottom: 5%;">
+                    Por favor, completa los campos
+                    requeridos con tus datos fiscales para emitir la factura correctamente.
+                </p>
+
+                <!-- Formulario de captura de datos fiscales -->
+                <form action="#" method="POST">
+                    <!-- Datos de Domicilio -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="calle" class="form-label">Calle *</label>
+                            <input type="text" class="form-control" id="calle" name="calle" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="noExterior" class="form-label">No. Exterior *</label>
+                            <input type="text" class="form-control" id="noExterior" name="noExterior" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="noInterior" class="form-label">No. Interior</label>
+                            <input type="text" class="form-control" id="noInterior" name="noInterior">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="codigoPostal" class="form-label">Código Postal *</label>
+                            <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="colonia" class="form-label">Colonia *</label>
+                            <input type="text" class="form-control" id="colonia" name="colonia" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="municipio" class="form-label">Del./Municipio *</label>
+                            <input type="text" class="form-control" id="municipio" name="municipio" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ciudad" class="form-label">Ciudad *</label>
+                            <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="estado" class="form-label">Estado *</label>
+                            <input type="text" class="form-control" id="estado" name="estado" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pais" class="form-label">País *</label>
+                            <input type="text" class="form-control" id="pais" name="pais" required>
+                        </div>
+                    </div>
+
+                    <!-- Datos Fiscales -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
+                            <select class="form-select" id="tipoPersona" name="tipoPersona" required>
+                                <option value="Moral">Moral</option>
+                                <option value="Física">Física</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="rfc" class="form-label">RFC *</label>
+                            <input type="text" class="form-control" id="rfc" name="rfc" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="razonSocial" class="form-label">Razón Social *</label>
+                            <input type="text" class="form-control" id="razonSocial" name="razonSocial" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="usoCFDI" class="form-label">Uso del CFDI *</label>
+                            <input type="text" class="form-control" id="usoCFDI" name="usoCFDI" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
+                            <input type="text" class="form-control" id="regimenFiscal" name="regimenFiscal" required>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <!-- Botón de envío -->
+                    <div class="text-center mb-3">
+                        <button type="submit" class="btn btn-primary" style="width: 80%;">
+                            <i class="bi bi-save"></i> Guardar Datos
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                <div class="col-xl-12">
+                    <!-- Bordered Tabs -->
+                    <ul class="nav nav-tabs nav-tabs-bordered">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Resumen</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Actualizar Datos</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Generar Factura</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content pt-2">
+                        <!-- Pestaña de Resumen -->
+                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                            <h5 class="card-title">Datos Fiscales</h5>
+                            <p class="small fst-italic">Por favor, revisa los datos fiscales proporcionados para emitir la factura correctamente.</p>
+
+                            <!-- Sección de Datos de Domicilio -->
+                            <h5 class="card-title mt-4">Datos de Domicilio</h5>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Calle</div>
+                                <div class="col-lg-9 col-md-8">Avenida Reforma</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">No. Exterior</div>
+                                <div class="col-lg-9 col-md-8">123</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">No. Interior</div>
+                                <div class="col-lg-9 col-md-8">A-2</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Código Postal</div>
+                                <div class="col-lg-9 col-md-8">01000</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Colonia</div>
+                                <div class="col-lg-9 col-md-8">Juárez</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Del./Municipio</div>
+                                <div class="col-lg-9 col-md-8">Cuauhtémoc</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Ciudad</div>
+                                <div class="col-lg-9 col-md-8">Ciudad de México</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Estado</div>
+                                <div class="col-lg-9 col-md-8">CDMX</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">País</div>
+                                <div class="col-lg-9 col-md-8">México</div>
+                            </div>
+
+                            <!-- Línea separadora -->
+                            <hr class="my-4">
+
+                            <!-- Sección de Datos Fiscales -->
+                            <h5 class="card-title">Datos Fiscales</h5>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Tipo de Persona</div>
+                                <div class="col-lg-9 col-md-8">Física</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">RFC</div>
+                                <div class="col-lg-9 col-md-8">ABC123456T90</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Razón Social</div>
+                                <div class="col-lg-9 col-md-8">Juan Pérez</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Uso del CFDI</div>
+                                <div class="col-lg-9 col-md-8">Gastos en general</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label fw-bold">Régimen Fiscal</div>
+                                <div class="col-lg-9 col-md-8">Régimen de sueldos y salarios</div>
+                            </div>
+                        </div>
+
+                        <!-- Pestaña de Actualizar Datos -->
+                        <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                            <h5 class="card-title">Editar Datos Fiscales</h5>
+                            <form>
+                                <!-- Datos de Domicilio -->
+                                <div class="row mb-3">
+                                    <label for="calle" class="col-md-4 col-lg-3 col-form-label">Calle *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="calle" type="text" class="form-control" id="calle" value="Avenida Reforma" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="noExterior" class="col-md-4 col-lg-3 col-form-label">No. Exterior *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="noExterior" type="text" class="form-control" id="noExterior" value="123" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="noInterior" class="col-md-4 col-lg-3 col-form-label">No. Interior</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="noInterior" type="text" class="form-control" id="noInterior" value="A-2">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="codigoPostal" class="col-md-4 col-lg-3 col-form-label">Código Postal *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="codigoPostal" type="text" class="form-control" id="codigoPostal" value="01000" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="colonia" class="col-md-4 col-lg-3 col-form-label">Colonia *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="colonia" type="text" class="form-control" id="colonia" value="Juárez" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="municipio" class="col-md-4 col-lg-3 col-form-label">Del./Municipio *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="municipio" type="text" class="form-control" id="municipio" value="Cuauhtémoc" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="ciudad" class="col-md-4 col-lg-3 col-form-label">Ciudad *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="ciudad" type="text" class="form-control" id="ciudad" value="Ciudad de México" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="estado" class="col-md-4 col-lg-3 col-form-label">Estado *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="estado" type="text" class="form-control" id="estado" value="CDMX" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="pais" class="col-md-4 col-lg-3 col-form-label">País *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="pais" type="text" class="form-control" id="pais" value="México" required>
+                                    </div>
+                                </div>
+
+                                <!-- Línea separadora -->
+                                <hr class="my-4">
+
+                                <!-- Datos Fiscales -->
+                                <div class="row mb-3">
+                                    <label for="tipoPersona" class="col-md-4 col-lg-3 col-form-label">Tipo de Persona *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select name="tipoPersona" class="form-select" id="tipoPersona" required>
+                                            <option value="Física" selected>Física</option>
+                                            <option value="Moral">Moral</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="rfc" class="col-md-4 col-lg-3 col-form-label">RFC *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="rfc" type="text" class="form-control" id="rfc" value="ABC123456T90" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="razonSocial" class="col-md-4 col-lg-3 col-form-label">Razón Social *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="razonSocial" type="text" class="form-control" id="razonSocial" value="Juan Pérez" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="usoCFDI" class="col-md-4 col-lg-3 col-form-label">Uso del CFDI *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="usoCFDI" type="text" class="form-control" id="usoCFDI" value="Gastos en general" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="regimenFiscal" class="col-md-4 col-lg-3 col-form-label">Régimen Fiscal *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="regimenFiscal" type="text" class="form-control" id="regimenFiscal" value="Régimen de sueldos y salarios" required>
+                                    </div>
+                                </div>
+
+                                <!-- Botón para guardar cambios -->
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Pestaña de Generar Factura -->
+                        <div class="tab-pane fade pt-3" id="profile-settings">
+                            <h5 class="card-title">Generar Factura</h5>
+                            <form action="#" method="POST">
+                                <!-- Datos del Cliente -->
+                                <div class="row mb-3">
+                                    <label for="cliente" class="col-md-4 col-lg-3 col-form-label">Cliente *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="cliente" id="cliente" class="form-control" placeholder="Nombre del Cliente" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="rfcCliente" class="col-md-4 col-lg-3 col-form-label">RFC *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="rfcCliente" id="rfcCliente" class="form-control" placeholder="RFC del Cliente" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="direccionCliente" class="col-md-4 col-lg-3 col-form-label">Dirección *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="direccionCliente" id="direccionCliente" class="form-control" placeholder="Dirección del Cliente" required>
+                                    </div>
+                                </div>
+
+                                <!-- Línea separadora -->
+                                <hr class="my-4">
+
+                                <!-- Datos del Producto/Servicio -->
+                                <div class="row mb-3">
+                                    <label for="productoServicio" class="col-md-4 col-lg-3 col-form-label">Producto/Servicio *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="productoServicio" id="productoServicio" class="form-control" placeholder="Descripción del Producto o Servicio" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="cantidad" class="col-md-4 col-lg-3 col-form-label">Cantidad *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="precio" class="col-md-4 col-lg-3 col-form-label">Precio Unitario *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="number" name="precio" id="precio" class="form-control" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="total" class="col-md-4 col-lg-3 col-form-label">Total *</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="number" name="total" id="total" class="form-control" step="0.01" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Línea separadora -->
+                                <hr class="my-4">
+
+                                <!-- Botón para emitir factura -->
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">Emitir Factura</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- End #main -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            <!-- All the links in the footer should remain intact. -->
+            <!-- You can delete the links only if you purchased the pro version. -->
+            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Script Js -->
+    <script src="~/js/main.js"></script>
+
+    <!-- Vendor JS Files -->
+    <script src="~/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/vendor/echarts/echarts.min.js"></script>
+    <script src="~/vendor/quill/quill.js"></script>
+    <script src="~/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/vendor/tinymce/tinymce.min.js"></script>
+
+</body>
+
+</html>
