@@ -2,9 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PRUEBAS_LOGIN.Models;
-
 using PRUEBAS_LOGIN.Permisos;
-
 
 namespace PRUEBAS_LOGIN.Controllers
 {
@@ -20,45 +18,31 @@ namespace PRUEBAS_LOGIN.Controllers
 
         public IActionResult Index()
         {
-            // Recuperar el objeto oUsuario de la sesión
-            var oUsuarioJson = HttpContext.Session.GetString("usuario");
+            var usuarioJson = HttpContext.Session.GetString("usuario");
 
-            if (string.IsNullOrEmpty(oUsuarioJson))
+            if (string.IsNullOrEmpty(usuarioJson))
             {
-                // Si no hay sesión, redirigir al login
                 return RedirectToAction("Login", "Acceso");
             }
 
-            // Deserializar el objeto oUsuario
-            var oUsuario = JsonConvert.DeserializeObject<Usuario>(oUsuarioJson);
+            // Deserializar el objeto
+            var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
 
-            // Verificar el valor de oUsuario.Nombre
-            if (string.IsNullOrEmpty(oUsuario.Nombre))
+            if (usuario == null)
             {
-                Console.WriteLine("El nombre del usuario está vacío o nulo.");
-            }
-            else
-            {
-                Console.WriteLine($"Nombre del usuario: {oUsuario.Nombre}");
+                return RedirectToAction("Login", "Acceso");
             }
 
-            // Pasar el nombre del usuario a la vista
-            ViewBag.NombreUsuario = oUsuario.Nombre;
+            ViewBag.NombreUsuario = usuario.Nombre;
 
             return View();
         }
 
-        
-
         public IActionResult CerrarSesion()
         {
-            // Elimina todos los datos almacenados en la sesión
             HttpContext.Session.Clear();
-
-            // Redirige a la página de login
             return RedirectToAction("Login", "Acceso");
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

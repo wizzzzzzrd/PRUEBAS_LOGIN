@@ -1,4 +1,6 @@
 ﻿@{
+    @model PRUEBAS_LOGIN.Models.Usuario
+
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +48,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
-                <img src="assets/img/logo.png" alt="Imagen grande" class="img-fluid h-75">
+                <img src="~/images/logo.png" alt="Imagen grande" class="img-fluid h-75">
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -54,9 +56,7 @@
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
                 <input type="text" name="query" placeholder="Buscar" title="Ingrese palabra clave">
-                <button type="submit" title="Buscar">
-                    <i class="bi bi-search"></i>
-                </button>
+                <button type="submit" title="Buscar"><i class="bi bi-search"></i></button>
             </form>
         </div><!-- End Search Bar -->
 
@@ -76,7 +76,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Perfil", "Usuario")">
                                 <i class="bi bi-person"></i>
                                 <span>Mi Perfil</span>
                             </a>
@@ -86,9 +86,9 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                                <i class="bi bi-gear"></i>
-                                <span>Configuración de la Cuenta</span>
+                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Documentos", "Historial")">
+                                <i class="bi bi-file-earmark"></i>
+                                <span>Documentos Emitidos</span>
                             </a>
                         </li>
                         <li>
@@ -96,7 +96,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Fiscales", "Facturacion")">
                                 <i class="bi bi-receipt"></i>
                                 <span>Facturación</span>
                             </a>
@@ -104,13 +104,16 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <span>Salir</span>
-                            </a>
+                            <form method="post" action="@Url.Action("CerrarSesion", "Home")">
+                                @Html.AntiForgeryToken() <!-- Token anti-CSRF -->
+                                <button type="submit" class="dropdown-item d-flex align-items-center" style="background: none; border: none; cursor: pointer;">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Salir</span>
+                                </button>
+                            </form>
                         </li>
+
                     </ul><!-- End Profile Dropdown Items -->
                 </li><!-- End Profile Nav -->
             </ul>
@@ -118,9 +121,9 @@
     </header><!-- End Header -->
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
-        <ul class="sidebar-nav" id="href=" @Url.Action("Index", "Home")">
+        <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="@Url.Action("Index", "Home")">
                     <i class="bi bi-grid"></i>
                     <span>Panel de Control</span>
                 </a>
@@ -185,125 +188,143 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+     
 
-        <section class="section profile">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8 w-80">
-                        <div class="card">
-                            <div class="card-body pt-3">
-                                <!-- Bordered Tabs -->
-                                <ul class="nav nav-tabs nav-tabs-bordered">
-                                    <li class="nav-item">
-                                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
-                                            Resumen
-                                        </button>
-                                    </li>
+@if (Model == null)
+{
+    <p>El usuario no existe o no se encontró.</p>
+}
+else
+{
+            <section class="section profile">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 w-80">
+                            <div class="card">
+                                <div class="card-body pt-3">
+                                    <!-- Bordered Tabs -->
+                                    <ul class="nav nav-tabs nav-tabs-bordered">
+                                        <li class="nav-item">
+                                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
+                                                Resumen
+                                            </button>
+                                        </li>
 
-                                    <li class="nav-item">
-                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">
-                                            Editar Perfil
-                                        </button>
-                                    </li>
-                                    <li class="nav-item">
-                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">
-                                            Cambiar Contraseña
-                                        </button>
-                                    </li>
-                                </ul>
+                                        <li class="nav-item">
+                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">
+                                                Editar Perfil
+                                            </button>
+                                        </li>
+                                        <li class="nav-item">
+                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">
+                                                Cambiar Contraseña
+                                            </button>
+                                        </li>
+                                    </ul>
 
-                                <div class="tab-content pt-2">
-                                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                                        <h5 class="card-title">Recuerda</h5>
-                                        <p class="small fst-italic">
-                                            Los datos a modificar deben ser verdaderos; Estos están protegidos y cifrados para el acceso restringido de la plataforma.
-                                        </p>
+                                    <div class="tab-content pt-2">
+                                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                            <h5 class="card-title">Recuerda</h5>
+                                            <p class="small fst-italic">
+                                                Los datos a modificar deben ser verdaderos; Estos están protegidos y cifrados para el acceso restringido de la plataforma.
+                                            </p>
 
-                                        <h5 class="card-title">Detalles del Perfil</h5>
+                                            <h5 class="card-title">Detalles del Perfil</h5>
 
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 label">Nombre Completo</div>
-                                            <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Nombre Completo</div>
+                                                <div class="col-lg-9 col-md-8">@Model.Nombre</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Correo Electrónico</div>
+                                                <div class="col-lg-9 col-md-8">@Model.Correo</div>
+                                            </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 label">Correo Electrónico</div>
-                                            <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
+                                        @{
+                                            var tipoMensaje = TempData["TipoMensaje"]?.ToString();
+                                            var mensaje = TempData["Mensaje"]?.ToString();
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(mensaje))
+                                        {
+                                            var alertClass = tipoMensaje == "success" ? "alert-success" :
+                                            tipoMensaje == "warning" ? "alert-warning" :
+                                            tipoMensaje == "danger" ? "alert-danger" : "alert-info";
+
+                                            <div class="alert @alertClass alert-dismissible fade show" role="alert">
+                                                @mensaje
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        }
+
+                                        <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                                            @using (Html.BeginForm("ActualizarCorreoYNombre", "Usuario", FormMethod.Post))
+                                            {
+                                                @Html.HiddenFor(m => m.IdUsuario)
+
+                                                <div class="row mb-3">
+                                                    <label for="Nombre" class="col-md-4 col-lg-3 col-form-label">Nombre Completo</label>
+                                                    <div class="col-md-8 col-lg-9">
+                                                        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre" })
+                                                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <label for="Correo" class="col-md-4 col-lg-3 col-form-label">Correo Electrónico</label>
+                                                    <div class="col-md-8 col-lg-9">
+                                                        @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo" })
+                                                        @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn btn-primary" style="width: 80%;"><i class="bi bi-save"></i> Guardar Cambios</button>
+                                                </div>
+                                            }
                                         </div>
-                                    </div>
 
-                                    <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-                                        <form>
-                                            <div class="row mb-3">
-                                                <label for="fullName" class="col-md-4 col-lg-3 col-form-label">
-                                                    Nombre Completo
-                                                </label>
-                                                <div class="col-md-8 col-lg-9">
-                                                    <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                                        <div class="tab-pane fade pt-3" id="profile-change-password">
+                                            @using (Html.BeginForm("ActualizarClave", "Usuario", FormMethod.Post))
+                                            {
+                                                @Html.HiddenFor(m => m.IdUsuario)
+
+                                                <div class="row mb-3">
+                                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">
+                                                        Nueva Contraseña
+                                                    </label>
+                                                    <div class="col-md-8 col-lg-9">
+                                                        <input name="newPassword" type="password" class="form-control" id="newPassword" required />
+                                                        @Html.ValidationMessage("newPassword", "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="row mb-3">
-                                                <label for="Email" class="col-md-4 col-lg-3 col-form-label">
-                                                    Correo Electrónico
-                                                </label>
-                                                <div class="col-md-8 col-lg-9">
-                                                    <input name="email" type="email" class="form-control" id="Email" value="k.anderson@example.com">
+                                                <div class="row mb-3">
+                                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">
+                                                        Confirmar Nueva Contraseña
+                                                    </label>
+                                                    <div class="col-md-8 col-lg-9">
+                                                        <input name="renewPassword" type="password" class="form-control" id="renewPassword" required />
+                                                        @Html.ValidationMessage("renewPassword", "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="text-center">
-                                                <button type="submit" class="btn btn-primary" style="width: 80%;">
-                                                    <i class="bi bi-save"></i> Guardar Cambios
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <div class="tab-pane fade pt-3" id="profile-change-password">
-                                        <form>
-                                            <div class="row mb-3">
-                                                <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">
-                                                    Contraseña Actual
-                                                </label>
-                                                <div class="col-md-8 col-lg-9">
-                                                    <input name="password" type="password" class="form-control" id="currentPassword">
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn btn-primary" style="width: 80%;"><i class="bi bi-save"></i> Guardar Contraseña</button>
                                                 </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">
-                                                    Nueva Contraseña
-                                                </label>
-                                                <div class="col-md-8 col-lg-9">
-                                                    <input name="newpassword" type="password" class="form-control" id="newPassword">
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">
-                                                    Confirmar Nueva Contraseña
-                                                </label>
-                                                <div class="col-md-8 col-lg-9">
-                                                    <input name="renewpassword" type="password" class="form-control" id="renewPassword">
-                                                </div>
-                                            </div>
-
-                                            <div class="text-center">
-                                                <button type="submit" class="btn btn-primary" style="width: 80%;">
-                                                    <i class="bi bi-save"></i> Guardar Contraseña
-                                                </button>
-                                            </div>
-                                        </form>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main><!-- End #main -->
+            </section>
+        }
+</main>
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

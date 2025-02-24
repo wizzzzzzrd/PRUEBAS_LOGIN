@@ -7,17 +7,17 @@ namespace PRUEBAS_LOGIN.Permisos
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // Accedemos al contexto HTTP directamente desde el filterContext
             var session = filterContext.HttpContext.Session;
 
-            // Verificamos si la sesión contiene el valor "usuario"
-            if (session.GetString("usuario") == null)
+            // Verificamos si "userId" existe en la sesión
+            int? userId = session.GetInt32("userId");
+
+            if (!userId.HasValue)
             {
-                // Si no hay sesión, redirigimos al login
                 filterContext.Result = new RedirectToActionResult("Login", "Acceso", null);
             }
 
             base.OnActionExecuting(filterContext);
         }
-    }   
+    }
 }
