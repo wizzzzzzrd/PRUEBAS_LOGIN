@@ -178,451 +178,615 @@
         </ul>
     </aside><!-- End Sidebar-->
 
-    <main id="main" class="main">
 
-        <div class="pagetitle">
-            <h1>Facturación</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
-                    <li class="breadcrumb-item">Usuarios</li>
-                    <li class="breadcrumb-item active">Facturación</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
-        <!-- Formulario de Captura de datos fiscales -->
-        <!-- Fondo brillante de color azul -->
-        <!-- Tarjeta -->
-        @if (!(ViewBag.HasFiscalData ?? false))
-        {
-            <div class="card">
-                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                    <h1 class="text-center mb-2 mt-5">Captura de Datos Fiscales</h1>
-                    <p class="text-center text-muted" style="font-size: 0.6rem; margin-bottom: 5%;">
-                        Por favor, completa los campos requeridos con tus datos fiscales para emitir la factura correctamente.
-                    </p>
-                    @if (TempData["Mensaje"] != null)
-                    {
-                        <div class="alert alert-@TempData["TipoMensaje"]">
-                            @TempData["Mensaje"]
-                            @if (TempData["Debug"] != null)
-                            {
-                                <pre>@TempData["Debug"]</pre>
-                            }
-                        </div>
-                    }
 
-                    <form asp-action="Fiscales" method="POST">
-                        <!-- Datos de Domicilio -->
-                        <div class="row mb-3">
+       
+
+        <main id="main" class="main my-4">
+
+            <div class="pagetitle">
+                <h1>Facturación</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+                        <li class="breadcrumb-item">Usuarios</li>
+                        <li class="breadcrumb-item active">Facturación</li>
+                    </ol>
+                </nav>
+            </div><!-- End Page Title -->
+            <!-- Formulario de Captura de datos fiscales -->
+            <!-- Fondo brillante de color azul -->
+            <!-- Tarjeta -->
+            @if (!(ViewBag.HasFiscalData ?? false))
+            {
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                        <h1 class="text-center mb-2 mt-5">Captura de Datos Fiscales</h1>
+                        <p class="text-center text-muted" style="font-size: 0.6rem; margin-bottom: 5%;">
+                            Por favor, completa los campos requeridos con tus datos fiscales para emitir la factura correctamente.
+                        </p>
+                        @if (TempData["Mensaje"] != null)
+                        {
+                            <div class="alert alert-@TempData[" TipoMensaje"]">
+                                @TempData["Mensaje"]
+                                @if (TempData["Debug"] != null)
+                                {
+                                    <pre>@TempData["Debug"]</pre>
+                                }
+                            </div>
+                        }
+
+                        <form asp-action="Fiscales" method="POST">
+                            <!-- Datos de Domicilio -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="calle" class="form-label">Calle *</label>
+                                    <input type="text" class="form-control" id="calle" name="Calle" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="noExterior" class="form-label">No. Exterior *</label>
+                                    <input type="text" class="form-control" id="noExterior" name="NoExterior" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="noInterior" class="form-label">No. Interior</label>
+                                    <input type="text" class="form-control" id="noInterior" name="NoInterior">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="codigoPostal" class="form-label">Código Postal *</label>
+                                    <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="colonia" class="form-label">Colonia *</label>
+                                    <input type="text" class="form-control" id="colonia" name="colonia" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="municipio" class="form-label">Del./Municipio *</label>
+                                    <input type="text" class="form-control" id="municipio" name="municipio" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="ciudad" class="form-label">Ciudad *</label>
+                                    <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="estado" class="form-label">Estado *</label>
+                                    <input type="text" class="form-control" id="estado" name="estado" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pais" class="form-label">País *</label>
+                                    <input type="text" class="form-control" id="pais" name="pais" required>
+                                </div>
+                            </div>
+                            <!-- Datos Fiscales -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
+                                    <select class="form-select" id="tipoPersona" name="tipoPersona" required>
+                                        <option value="Moral">Moral</option>
+                                        <option value="Fisica">Física</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="rfc" class="form-label">RFC *</label>
+                                    <input type="text" class="form-control" id="rfc" name="rfc" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="razonSocial" class="form-label">Razón Social *</label>
+                                    <input type="text" class="form-control" id="razonSocial" name="razonSocial" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="calle" class="form-label">Calle *</label>
-                                <input type="text" class="form-control" id="calle" name="Calle" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="noExterior" class="form-label">No. Exterior *</label>
-                                <input type="text" class="form-control" id="noExterior" name="NoExterior" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="noInterior" class="form-label">No. Interior</label>
-                                <input type="text" class="form-control" id="noInterior" name="NoInterior">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="codigoPostal" class="form-label">Código Postal *</label>
-                                <input type="text" class="form-control" id="codigoPostal" name="codigoPostal" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="colonia" class="form-label">Colonia *</label>
-                                <input type="text" class="form-control" id="colonia" name="colonia" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="municipio" class="form-label">Del./Municipio *</label>
-                                <input type="text" class="form-control" id="municipio" name="municipio" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="ciudad" class="form-label">Ciudad *</label>
-                                <input type="text" class="form-control" id="ciudad" name="ciudad" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="estado" class="form-label">Estado *</label>
-                                <input type="text" class="form-control" id="estado" name="estado" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="pais" class="form-label">País *</label>
-                                <input type="text" class="form-control" id="pais" name="pais" required>
-                            </div>
-                        </div>
-                        <!-- Datos Fiscales -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
-                                <select class="form-select" id="tipoPersona" name="tipoPersona" required>
-                                    <option value="Moral">Moral</option>
-                                    <option value="Fisica">Física</option>
+                                <label for="usoCFDI" class="form-label">Uso CFDI *</label>
+                                <select name="usoCFDI" class="form-select" id="usoCFDI" required>
+                                    <option value="">Seleccione una opción</option>
+                                    @if (ViewBag.UsosCFDI != null)
+                                    {
+                                        foreach (var uso in ViewBag.UsosCFDI)
+                                        {
+                                            <option value="@uso.ClaveUsoCFDI" selected="@(Model != null && Model.CFDI == uso.ClaveUsoCFDI ? "selected" : null)">
+                                                @($"{uso.ClaveUsoCFDI} - {uso.Descripcion}")
+                                            </option>
+                                        }
+                                    }
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="rfc" class="form-label">RFC *</label>
-                                <input type="text" class="form-control" id="rfc" name="rfc" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label for="razonSocial" class="form-label">Razón Social *</label>
-                                <input type="text" class="form-control" id="razonSocial" name="razonSocial" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usoCFDI" class="form-label">Uso del CFDI *</label>
-                                <input type="text" class="form-control" id="usoCFDI" name="usoCFDI" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
-                                <input type="text" class="form-control" id="regimenFiscal" name="regimenFiscal" required>
-                            </div>
-                        </div>
-                        <br>
-                        <!-- Botón de envío -->
-                        <div class="text-center mb-3">
-                            <button type="submit" class="btn btn-primary" style="width: 80%;">
-                                <i class="bi bi-save"></i> Guardar Datos
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-info text-center">
-                <i class="bi bi-check-circle-fill"></i> Ya se han registrado tus datos fiscales.
-            </div>
-        }
-
-<!-- TARJETA DE EDITAR INFORMACION FISCAL -->
-<div class="card">
-    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-        <div class="col-xl-12">
-            <!-- Bordered Tabs -->
-            <ul class="nav nav-tabs nav-tabs-bordered">
-                <li class="nav-item">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Resumen</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Actualizar Datos</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Generar Factura</button>
-                </li>
-            </ul>
-
-            <div class="tab-content pt-2">
-                <!-- Pestaña de Resumen -->
-                <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                    <h5 class="card-title">Datos Fiscales</h5>
-                    <p class="small fst-italic">Por favor, revisa los datos fiscales proporcionados para emitir la factura correctamente.</p>
-                            @if (!hasFiscalData)
-                            {
-                                <div class="alert alert-warning text-center">
-                                    No se encontraron datos fiscales registrados. Por favor, captura tus datos.
+                                <div class="col-md-6">
+                                    <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
+                                    <input type="text" class="form-control" id="regimenFiscal" name="regimenFiscal" required>
                                 </div>
-                            }
-                            @if (!string.IsNullOrEmpty(mensaje))
-                            {
-                                <div class="alert alert-@(tipoMensaje ?? "info") alert-dismissible fade show" role="alert">
-                                    @if (tipoMensaje == "success")
-                                    {
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    }
-                                    else if (tipoMensaje == "danger")
-                                    {
-                                        <i class="bi bi-x-circle-fill"></i>
-                                    }
-                                    @mensaje
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            }
-
-                    <!-- Datos de Domicilio -->
-                    <h5 class="card-title mt-4">Datos de Domicilio</h5>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Calle</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Calle</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">No. Exterior</div>
-                        <div class="col-lg-9 col-md-8">@Model?.NoExterior</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">No. Interior</div>
-                        <div class="col-lg-9 col-md-8">@Model?.NoInterior</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Código Postal</div>
-                        <div class="col-lg-9 col-md-8">@Model?.CodigoPostal</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Colonia</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Colonia</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Del./Municipio</div>
-                        <div class="col-lg-9 col-md-8">@Model?.DelMunicipio</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Ciudad</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Ciudad</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Estado</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Estado</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">País</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Pais</div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <!-- Datos Fiscales -->
-                    <h5 class="card-title">Datos Fiscales</h5>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Tipo de Persona</div>
-                        <div class="col-lg-9 col-md-8">@Model?.TipoPersona</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">RFC</div>
-                        <div class="col-lg-9 col-md-8">@Model?.RFC</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Razón Social</div>
-                        <div class="col-lg-9 col-md-8">@Model?.RazonSocial</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Uso del CFDI</div>
-                        <div class="col-lg-9 col-md-8">@Model?.CFDI</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label fw-bold">Régimen Fiscal</div>
-                        <div class="col-lg-9 col-md-8">@Model?.Regimen</div>
+                            </div>
+                            <br>
+                            <!-- Botón de envío -->
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-primary" style="width: 80%;">
+                                    <i class="bi bi-save"></i> Guardar Datos
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <!-- Pestaña de Actualizar Datos -->
-                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-                    <h5 class="card-title">Editar Datos Fiscales</h5>
-                            @if (!hasFiscalData)
-                            {
-                                <div class="alert alert-warning text-center">
-                                    No se encontraron datos fiscales registrados. Por favor, captura tus datos.
-                                </div>
-                            }                          
-                          
-                    <form asp-action="ActualizarFiscal" method="POST">
-                        <!-- Datos de Domicilio -->
-                        <div class="row mb-3">
-                            <label for="calle" class="col-md-4 col-lg-3 col-form-label">Calle *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Calle" type="text" class="form-control" id="calle" value="@Model?.Calle" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="noExterior" class="col-md-4 col-lg-3 col-form-label">No. Exterior *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="NoExterior" type="text" class="form-control" id="noExterior" value="@Model?.NoExterior" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="noInterior" class="col-md-4 col-lg-3 col-form-label">No. Interior</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="NoInterior" type="text" class="form-control" id="noInterior" value="@Model?.NoInterior">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="codigoPostal" class="col-md-4 col-lg-3 col-form-label">Código Postal *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="CodigoPostal" type="text" class="form-control" id="codigoPostal" value="@Model?.CodigoPostal" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="colonia" class="col-md-4 col-lg-3 col-form-label">Colonia *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Colonia" type="text" class="form-control" id="colonia" value="@Model?.Colonia" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="municipio" class="col-md-4 col-lg-3 col-form-label">Del./Municipio *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="DelMunicipio" type="text" class="form-control" id="municipio" value="@Model?.DelMunicipio" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="ciudad" class="col-md-4 col-lg-3 col-form-label">Ciudad *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Ciudad" type="text" class="form-control" id="ciudad" value="@Model?.Ciudad" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="estado" class="col-md-4 col-lg-3 col-form-label">Estado *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Estado" type="text" class="form-control" id="estado" value="@Model?.Estado" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="pais" class="col-md-4 col-lg-3 col-form-label">País *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Pais" type="text" class="form-control" id="pais" value="@Model?.Pais" required>
-                            </div>
-                        </div>
-                        
-                        <hr class="my-4">
-                        
-                        <!-- Datos Fiscales -->
-                        <div class="row mb-3">
-                            <label for="tipoPersona" class="col-md-4 col-lg-3 col-form-label">Tipo de Persona *</label>
-                            <div class="col-md-8 col-lg-9">
-                                        <select name="TipoPersona" class="form-select" id="tipoPersona" required>
-                                            @if (Model != null && Model.TipoPersona == "Física")
-                                            {
-                                                <option value="Física" selected>Física</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="Física">Física</option>
-                                            }
-
-                                            @if (Model != null && Model.TipoPersona == "Moral")
-                                            {
-                                                <option value="Moral" selected>Moral</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="Moral">Moral</option>
-                                            }
-                                        </select>
-
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="rfc" class="col-md-4 col-lg-3 col-form-label">RFC *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="RFC" type="text" class="form-control" id="rfc" value="@Model?.RFC" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="razonSocial" class="col-md-4 col-lg-3 col-form-label">Razón Social *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="RazonSocial" type="text" class="form-control" id="razonSocial" value="@Model?.RazonSocial" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="usoCFDI" class="col-md-4 col-lg-3 col-form-label">Uso del CFDI *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="CFDI" type="text" class="form-control" id="usoCFDI" value="@Model?.CFDI" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="regimenFiscal" class="col-md-4 col-lg-3 col-form-label">Régimen Fiscal *</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="Regimen" type="text" class="form-control" id="regimenFiscal" value="@Model?.Regimen" required>
-                            </div>
-                        </div>
-                        
-                        <!-- Campo oculto para IdFiscal -->
-                        <input type="hidden" name="IdFiscal" value="@Model?.IdFiscal" />
-
-                        <!-- Botón para guardar cambios -->
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                        </div>
-                    </form>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-check-circle-fill"></i> Ya se han registrado tus datos fiscales.
                 </div>
+            }
+            <div class="row justify-content-center">
+             
+                    <!-- Informacion fiscal -->
+                    <div class="card">
+                        <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                            <div class="w-100">
+                                <!-- Bordered Tabs -->
+                                <ul class="nav nav-tabs nav-tabs-bordered">
+                                    <li class="nav-item">
+                                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
+                                            Resumen
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">
+                                            Actualizar Datos
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">
+                                            Generar Factura
+                                        </button>
+                                    </li>
+                                </ul>
 
-                <!-- Pestaña de Generar Factura (aquí iría su contenido) -->
-                <div class="tab-pane fade pt-3" id="profile-settings">
-                    <!-- Contenido para generar factura -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                <div class="tab-content pt-2">
+                                    <!-- Pestaña de Resumen -->
+                                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                        <h5 class="card-title">Datos Fiscales</h5>
+                                        <p class="small fst-italic">
+                                            Por favor, revisa los datos fiscales proporcionados para emitir facturas correctamente.
+                                        </p>
+                                        @if (!hasFiscalData)
+                                        {
+                                            <div class="alert alert-warning text-center">
+                                                No se encontraron datos fiscales registrados. Por favor, captura tus datos.
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(mensaje))
+                                        {
+                                            <div class="alert alert-@(tipoMensaje ?? " info") alert-dismissible fade show" role="alert">
+                                                @if (tipoMensaje == "success")
+                                                {
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                }
+                                                else if (tipoMensaje == "danger")
+                                                {
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                }
+                                                @mensaje
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        }
+
+                                        <!-- Datos de Domicilio -->
+                                        <h5 class="card-title mt-4">Datos de Domicilio</h5>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Calle</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Calle</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">No. Exterior</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.NoExterior</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">No. Interior</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.NoInterior</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Código Postal</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.CodigoPostal</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Colonia</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Colonia</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Del./Municipio</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.DelMunicipio</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Ciudad</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Ciudad</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Estado</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Estado</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">País</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Pais</div>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <!-- Sección de Datos Fiscales -->
+                                        <h5 class="card-title">Datos Fiscales</h5>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Tipo de Persona</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.TipoPersona</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">RFC</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.RFC</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Razón Social</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.RazonSocial</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Uso del CFDI</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.CFDI</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Régimen Fiscal</div>
+                                            <div class="col-lg-9 col-md-8">@Model?.Regimen</div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin pestaña Resumen -->
+                                    <!-- Pestaña de Actualizar Datos -->
+                                    <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                                        <h5 class="card-title">Editar Datos Fiscales</h5>
+                                        @if (!hasFiscalData)
+                                        {
+                                            <div class="alert alert-warning text-center">
+                                                No se encontraron datos fiscales registrados. Por favor, captura tus datos.
+                                            </div>
+                                        }
+                                        <form asp-action="ActualizarFiscal" method="POST">
+                                            <!-- Datos de Domicilio -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="calle" class="form-label">Calle *</label>
+                                                    <input name="Calle" type="text" class="form-control" id="calle" value="@Model?.Calle" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="noExterior" class="form-label">No. Exterior *</label>
+                                                    <input name="NoExterior" type="text" class="form-control" id="noExterior" value="@Model?.NoExterior" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="noInterior" class="form-label">No. Interior</label>
+                                                    <input name="NoInterior" type="text" class="form-control" id="noInterior" value="@Model?.NoInterior">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="codigoPostal" class="form-label">Código Postal *</label>
+                                                    <input name="CodigoPostal" type="text" class="form-control" id="codigoPostal" value="@Model?.CodigoPostal" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="colonia" class="form-label">Colonia *</label>
+                                                    <input name="Colonia" type="text" class="form-control" id="colonia" value="@Model?.Colonia" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="municipio" class="form-label">Del./Municipio *</label>
+                                                    <input name="DelMunicipio" type="text" class="form-control" id="municipio" value="@Model?.DelMunicipio" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="ciudad" class="form-label">Ciudad *</label>
+                                                    <input name="Ciudad" type="text" class="form-control" id="ciudad" value="@Model?.Ciudad" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="estado" class="form-label">Estado *</label>
+                                                    <input name="Estado" type="text" class="form-control" id="estado" value="@Model?.Estado" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="pais" class="form-label">País *</label>
+                                                    <input name="Pais" type="text" class="form-control" id="pais" value="@Model?.Pais" required>
+                                                </div>
+                                            </div>
+                                            <hr class="my-4">
+                                            <!-- Datos Fiscales -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
+                                                    <select name="TipoPersona" class="form-select" id="tipoPersona" required>
+                                                        @if (Model != null && Model.TipoPersona == "Física")
+                                                        {
+                                                            <option value="Física" selected>Física</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="Física">Física</option>
+                                                        }
+                                                        @if (Model != null && Model.TipoPersona == "Moral")
+                                                        {
+                                                            <option value="Moral" selected>Moral</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="Moral">Moral</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="rfc" class="form-label">RFC *</label>
+                                                    <input name="RFC" type="text" class="form-control" id="rfc" value="@Model?.RFC" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="razonSocial" class="form-label">Razón Social *</label>
+                                                    <input name="RazonSocial" type="text" class="form-control" id="razonSocial" value="@Model?.RazonSocial" required>
+                                                </div>
+                                        <div class="col-md-6">
+                                            <label for="usoCFDI" class="form-label">Uso CFDI *</label>
+                                            <div class="col-md-6">
+                                                    <select name="usoCFDI" class="form-select" id="usoCFDI" required>
+                                                    <option value="">Seleccione una opción</option>
+                                                    @if (ViewBag.UsosCFDI != null)
+                                                    {
+                                                        foreach (var uso in ViewBag.UsosCFDI)
+                                                        {
+                                                            <option value="@uso.ClaveUsoCFDI" selected="@(Model != null && Model.CFDI == uso.ClaveUsoCFDI ? "selected" : null)">
+                                                                @($"{uso.ClaveUsoCFDI} - {uso.Descripcion}")
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
+                                                    <input name="Regimen" type="text" class="form-control" id="regimenFiscal" value="@Model?.Regimen" required>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="IdFiscal" value="@Model?.IdFiscal" />
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-save"></i> Guardar Cambios
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- Fin pestaña Actualizar Datos -->
+                            <!-- Pestaña de Generar Factura -->
+                            <div class="tab-pane fade pt-3" id="profile-settings">
+                                <h5 class="card-title">Generar Factura</h5>
+                                <form method="post" action="/facturar">
+                                    <!-- Datos del Cliente -->
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="mb-0">Emisor</h5>
+                                        </div>
+                                        <br />
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="emisorReceptor" class="form-label">Receptor</label>
+                                                    <input type="text" class="form-control" id="emisorReceptor" name="EmisorReceptor" placeholder="Receptor">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="emisorNombre" class="form-label">Nombre/Razón Social</label>
+                                                    <input type="text" class="form-control" id="emisorNombre" name="EmisorNombre" placeholder="Nombre o Razón Social">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="emisorCP" class="form-label">C.P</label>
+                                                    <input type="text" class="form-control" id="emisorCP" name="EmisorCP" placeholder="Código Postal">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="emisorRegimen" class="form-label">Régimen Fiscal</label>
+                                                    <input type="text" class="form-control" id="emisorRegimen" name="EmisorRegimen" placeholder="Régimen Fiscal">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Sección Receptor -->
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-secondary text-white">
+                                            <h5 class="mb-0">Receptor</h5>
+                                        </div>
+                                        <br />
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorRFC" class="form-label">RFC</label>
+                                                    <input type="text" class="form-control" id="receptorRFC" name="ReceptorRFC" placeholder="RFC">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorNombre" class="form-label">Nombre/Razón Social</label>
+                                                    <input type="text" class="form-control" id="receptorNombre" name="ReceptorNombre" placeholder="Nombre o Razón Social">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorCP" class="form-label">C.P</label>
+                                                    <input type="text" class="form-control" id="receptorCP" name="ReceptorCP" placeholder="Código Postal">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorRegimen" class="form-label">Régimen Fiscal</label>
+                                                    <input type="text" class="form-control" id="receptorRegimen" name="ReceptorRegimen" placeholder="Régimen Fiscal">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorCalle" class="form-label">Calle</label>
+                                                    <input type="text" class="form-control" id="receptorCalle" name="ReceptorCalle" placeholder="Calle">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorNoExt" class="form-label">No. Ext</label>
+                                                    <input type="text" class="form-control" id="receptorNoExt" name="ReceptorNoExt" placeholder="Número Exterior">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorNoInt" class="form-label">No. Int</label>
+                                                    <input type="text" class="form-control" id="receptorNoInt" name="ReceptorNoInt" placeholder="Número Interior">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorMunicipio" class="form-label">Del/Municipio</label>
+                                                    <input type="text" class="form-control" id="receptorMunicipio" name="ReceptorMunicipio" placeholder="Delegación o Municipio">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorColonia" class="form-label">Colonia</label>
+                                                    <input type="text" class="form-control" id="receptorColonia" name="ReceptorColonia" placeholder="Colonia">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorCiudad" class="form-label">Ciudad</label>
+                                                    <input type="text" class="form-control" id="receptorCiudad" name="ReceptorCiudad" placeholder="Ciudad">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorEstado" class="form-label">Estado</label>
+                                                    <input type="text" class="form-control" id="receptorEstado" name="ReceptorEstado" placeholder="Estado">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorPais" class="form-label">País</label>
+                                                    <input type="text" class="form-control" id="receptorPais" name="ReceptorPais" placeholder="País">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="usoCFDI" class="form-label">Uso CFDI *</label>
+                                                    <select name="usoCFDI" class="form-select" id="usoCFDI" required>
+                                                        <option value="">Seleccione una opción</option>
+                                                        @if (ViewBag.UsosCFDI != null)
+                                                        {
+                                                            foreach (var uso in ViewBag.UsosCFDI)
+                                                            {
+                                                                <option value="@uso.ClaveUsoCFDI" selected="@(Model != null && Model.CFDI == uso.ClaveUsoCFDI ? "selected" : null)">
+                                                                    @($"{uso.ClaveUsoCFDI} - {uso.Descripcion}")
+                                                                </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="receptorSucursal" class="form-label">Nombre de Sucursal</label>
+                                                    <input type="text" class="form-control" id="receptorSucursal" name="ReceptorSucursal" placeholder="Nombre de Sucursal">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Sección Información de Pago -->
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-info text-white">
+                                            <h5 class="mb-0">Información de Pago</h5>
+                                        </div>
+                                        <br />
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="metodoPago" class="form-label">Método de Pago</label>
+                                                    <input type="text" class="form-control" id="metodoPago" name="MetodoPago" placeholder="Método de Pago">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="condicionesPago" class="form-label">Condiciones de Pago</label>
+                                                    <input type="text" class="form-control" id="condicionesPago" name="CondicionesPago" placeholder="Condiciones de Pago">
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="formaPago" class="form-label">Forma de Pago</label>
+                                                    <input type="text" class="form-control" id="formaPago" name="FormaPago" placeholder="Forma de Pago">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="cuenta" class="form-label">Cuenta</label>
+                                                    <input type="text" class="form-control" id="cuenta" name="Cuenta" placeholder="Número de Cuenta">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Facturas Pendientes -->
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-warning">
+                                            <h5 class="mb-0">Facturas Pendientes</h5>
+                                        </div>
+                                        <br />
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="pendingTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Selección</th>
+                                                            <th>Ticket</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><input type="checkbox" class="form-check-input"></td>
+                                                            <td>Ticket 001</td>
+                                                            <td>$100.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox" class="form-check-input"></td>
+                                                            <td>Ticket 002</td>
+                                                            <td>$200.00</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="text-end mb-3">
+                                                <button type="button" id="addTicketsBtn" class="btn btn-primary">Agregar a Tickets</button>
+                                            </div>
+                                            <h6>Items Seleccionados</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="ticketsTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Ticket</th>
+                                                            <th>Subtotal</th>
+                                                            <th>Descuento</th>
+                                                            <th>IEPS</th>
+                                                            <th>IVA</th>
+                                                            <th>Impuestos</th>
+                                                            <th>Total Venta</th>
+                                                            <th>Tipo de Pago</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Aquí se agregarán dinámicamente las filas -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Botón para facturar -->
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success">Facturar</button>
+                                    </div>
+                                </form>
+                            </div>   <!-- Fin pestaña Generar Factura -->
+
+                            <!-- Incluir el script externo -->
+                            <script src="~/js/selector.js"></script>
+                         
+                                </div> <!-- Fin tab-content -->
+                            </div> <!-- Fin w-100 -->
+                        </div> <!-- Fin card-body -->
+                    </div> <!-- Fin card -->
+                </div> <!-- Fin col-11 -->
+        </main>
 
 
-                        <!-- Pestaña de Generar Factura -->
-                        <div class="tab-pane fade pt-3" id="profile-settings">
-                            <h5 class="card-title">Generar Factura</h5>
-                            <form action="#" method="POST">
-                                <!-- Datos del Cliente -->
-                                <div class="row mb-3">
-                                    <label for="cliente" class="col-md-4 col-lg-3 col-form-label">Cliente *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="text" name="cliente" id="cliente" class="form-control" placeholder="Nombre del Cliente" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="rfcCliente" class="col-md-4 col-lg-3 col-form-label">RFC *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="text" name="rfcCliente" id="rfcCliente" class="form-control" placeholder="RFC del Cliente" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="direccionCliente" class="col-md-4 col-lg-3 col-form-label">Dirección *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="text" name="direccionCliente" id="direccionCliente" class="form-control" placeholder="Dirección del Cliente" required>
-                                    </div>
-                                </div>
 
-                                <!-- Línea separadora -->
-                                <hr class="my-4">
 
-                                <!-- Datos del Producto/Servicio -->
-                                <div class="row mb-3">
-                                    <label for="productoServicio" class="col-md-4 col-lg-3 col-form-label">Producto/Servicio *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="text" name="productoServicio" id="productoServicio" class="form-control" placeholder="Descripción del Producto o Servicio" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="cantidad" class="col-md-4 col-lg-3 col-form-label">Cantidad *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="precio" class="col-md-4 col-lg-3 col-form-label">Precio Unitario *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="number" name="precio" id="precio" class="form-control" step="0.01" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="total" class="col-md-4 col-lg-3 col-form-label">Total *</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input type="number" name="total" id="total" class="form-control" step="0.01" readonly>
-                                    </div>
-                                </div>
-
-                                <!-- Línea separadora -->
-                                <hr class="my-4">
-
-                                <!-- Botón para emitir factura -->
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-success">Emitir Factura</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">
