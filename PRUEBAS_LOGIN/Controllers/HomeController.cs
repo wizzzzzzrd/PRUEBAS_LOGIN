@@ -35,9 +35,38 @@ namespace PRUEBAS_LOGIN.Controllers
 
             ViewBag.NombreUsuario = usuario.Nombre;
 
+            // Validar si el usuario es el administrador (IdUsuario == 6)
+            if (usuario.IdUsuario == 6)
+            {
+                return RedirectToAction("IndexAdmin");
+            }
+
+            // Si no es el administrador, redirigir a la vista normal
             return View();
         }
 
+        public IActionResult IndexAdmin()
+        {
+            // Obtener el usuario de la sesión
+            var usuarioJson = HttpContext.Session.GetString("usuario");
+
+            if (string.IsNullOrEmpty(usuarioJson))
+            {
+                return RedirectToAction("Login", "Acceso");
+            }
+
+            var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
+
+            if (usuario == null)
+            {
+                return RedirectToAction("Login", "Acceso");
+            }
+
+            // Asignar el nombre de usuario al ViewBag
+            ViewBag.NombreUsuario = usuario.Nombre;
+
+            return View();
+        }
         public IActionResult CerrarSesion()
         {
             HttpContext.Session.Clear();

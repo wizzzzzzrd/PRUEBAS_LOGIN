@@ -62,9 +62,7 @@ namespace PRUEBAS_LOGIN.Models
         [StringLength(100)]
         public string CFDI { get; set; }
 
-        [Required]
-        [StringLength(510)]
-        public string Regimen { get; set; }
+
 
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }

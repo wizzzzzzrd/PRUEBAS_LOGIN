@@ -264,13 +264,21 @@
                             </div>
                             <!-- Datos Fiscales -->
                             <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
-                                    <select class="form-select" id="tipoPersona" name="tipoPersona" required>
-                                        <option value="Moral">Moral</option>
-                                        <option value="Fisica">Física</option>
-                                    </select>
-                                </div>
+                            <div class="col-md-6">
+                                <label for="tipoPersona" class="form-label">Régimen Fiscal *</label>
+                                <select name="TipoPersona" class="form-select" id="tipoPersona" required>
+                                    <option value="">Seleccione una opción</option>
+                                    @if (ViewBag.RegimenesFiscales != null)
+                                    {
+                                        foreach (var regimen in ViewBag.RegimenesFiscales)
+                                        {
+                                            <option value="@regimen.TipoPersona" selected="@(Model != null && Model.TipoPersona == regimen.TipoPersona ? "selected" : null)">
+                                                @($"{regimen.ClaveRegimenFiscal} - {regimen.Descripcion} ({regimen.TipoPersona})")
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
                                 <div class="col-md-6">
                                     <label for="rfc" class="form-label">RFC *</label>
                                     <input type="text" class="form-control" id="rfc" name="rfc" required>
@@ -283,24 +291,20 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usoCFDI" class="form-label">Uso CFDI *</label>
-                                <select name="usoCFDI" class="form-select" id="usoCFDI" required>
-                                    <option value="">Seleccione una opción</option>
-                                    @if (ViewBag.UsosCFDI != null)
-                                    {
-                                        foreach (var uso in ViewBag.UsosCFDI)
-                                        {
-                                            <option value="@uso.ClaveUsoCFDI" selected="@(Model != null && Model.CFDI == uso.ClaveUsoCFDI ? "selected" : null)">
-                                                @($"{uso.ClaveUsoCFDI} - {uso.Descripcion}")
-                                            </option>
-                                        }
-                                    }
-                                </select>
-                            </div>
                                 <div class="col-md-6">
-                                    <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
-                                    <input type="text" class="form-control" id="regimenFiscal" name="regimenFiscal" required>
+                                    <label for="usoCFDI" class="form-label">Uso CFDI *</label>
+                                    <select name="usoCFDI" class="form-select" id="usoCFDI" required>
+                                        <option value="">Seleccione una opción</option>
+                                        @if (ViewBag.UsosCFDI != null)
+                                        {
+                                            foreach (var uso in ViewBag.UsosCFDI)
+                                            {
+                                                <option value="@uso.ClaveUsoCFDI" selected="@(Model != null && Model.CFDI == uso.ClaveUsoCFDI ? "selected" : null)">
+                                                    @($"{uso.ClaveUsoCFDI} - {uso.Descripcion}")
+                                                </option>
+                                            }
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <br>
@@ -319,7 +323,7 @@
                 <div class="alert alert-info text-center">
                     <i class="bi bi-check-circle-fill"></i> Ya se han registrado tus datos fiscales.
                 </div>
-            }
+           
             <div class="row justify-content-center">
              
                     <!-- Informacion fiscal -->
@@ -418,7 +422,7 @@
                                         <!-- Sección de Datos Fiscales -->
                                         <h5 class="card-title">Datos Fiscales</h5>
                                         <div class="row">
-                                            <div class="col-lg-3 col-md-4 label fw-bold">Tipo de Persona</div>
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Régimen Fiscal</div>
                                             <div class="col-lg-9 col-md-8">@Model?.TipoPersona</div>
                                         </div>
                                         <div class="row">
@@ -433,15 +437,17 @@
                                             <div class="col-lg-3 col-md-4 label fw-bold">Uso del CFDI</div>
                                             <div class="col-lg-9 col-md-8">@Model?.CFDI</div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 label fw-bold">Régimen Fiscal</div>
-                                            <div class="col-lg-9 col-md-8">@Model?.Regimen</div>
-                                        </div>
+                                    <br />
                                     </div>
+                                   
                                     <!-- Fin pestaña Resumen -->
                                     <!-- Pestaña de Actualizar Datos -->
                                     <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-                                        <h5 class="card-title">Editar Datos Fiscales</h5>
+                                        <h5 class="card-title">Actualiza Tus Datos Fiscales</h5>
+                                    <p class="small fst-italic">
+                                        Actualiza tus datos fiscales correctamente para emitir facturas.
+                                    </p>
+
                                         @if (!hasFiscalData)
                                         {
                                             <div class="alert alert-warning text-center">
@@ -450,6 +456,7 @@
                                         }
                                         <form asp-action="ActualizarFiscal" method="POST">
                                             <!-- Datos de Domicilio -->
+                                        <br />
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="calle" class="form-label">Calle *</label>
@@ -499,27 +506,22 @@
                                             <hr class="my-4">
                                             <!-- Datos Fiscales -->
                                             <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <label for="tipoPersona" class="form-label">Tipo de Persona *</label>
-                                                    <select name="TipoPersona" class="form-select" id="tipoPersona" required>
-                                                        @if (Model != null && Model.TipoPersona == "Física")
-                                                        {
-                                                            <option value="Física" selected>Física</option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="Física">Física</option>
-                                                        }
-                                                        @if (Model != null && Model.TipoPersona == "Moral")
-                                                        {
-                                                            <option value="Moral" selected>Moral</option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="Moral">Moral</option>
-                                                        }
-                                                    </select>
-                                                </div>
+                                        <div class="col-md-6">
+                                            <label for="tipoPersona" class="form-label">Régimen Fiscal *</label>
+                                            <select name="TipoPersona" class="form-select" id="tipoPersona" required>
+
+                                                <option value="">Seleccione una opción</option>
+                                                @if (ViewBag.RegimenesFiscales != null)
+                                                {
+                                                    foreach (var regimen in ViewBag.RegimenesFiscales)
+                                                    {
+                                                        <option value="@regimen.TipoPersona" selected="@(Model != null && Model.TipoPersona == regimen.TipoPersona ? "selected" : null)">
+                                                            @($"{regimen.ClaveRegimenFiscal} - {regimen.Descripcion} ({regimen.TipoPersona})")
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
                                                 <div class="col-md-6">
                                                     <label for="rfc" class="form-label">RFC *</label>
                                                     <input name="RFC" type="text" class="form-control" id="rfc" value="@Model?.RFC" required>
@@ -530,10 +532,9 @@
                                                     <label for="razonSocial" class="form-label">Razón Social *</label>
                                                     <input name="RazonSocial" type="text" class="form-control" id="razonSocial" value="@Model?.RazonSocial" required>
                                                 </div>
-                                        <div class="col-md-6">
-                                            <label for="usoCFDI" class="form-label">Uso CFDI *</label>
                                             <div class="col-md-6">
-                                                    <select name="usoCFDI" class="form-select" id="usoCFDI" required>
+                                                <label for="usoCFDI" class="form-label">Uso CFDI *</label>
+                                                <select name="usoCFDI" class="form-select" id="usoCFDI" required>
                                                     <option value="">Seleccione una opción</option>
                                                     @if (ViewBag.UsosCFDI != null)
                                                     {
@@ -546,26 +547,25 @@
                                                     }
                                                 </select>
                                             </div>
-                                        </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <label for="regimenFiscal" class="form-label">Régimen Fiscal *</label>
-                                                    <input name="Regimen" type="text" class="form-control" id="regimenFiscal" value="@Model?.Regimen" required>
-                                                </div>
                                             </div>
                                             <input type="hidden" name="IdFiscal" value="@Model?.IdFiscal" />
+                                            <br />
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="bi bi-save"></i> Guardar Cambios
                                                 </button>
                                             </div>
+                                            <br />
                                         </form>
                                     </div>
                                     <!-- Fin pestaña Actualizar Datos -->
                             <!-- Pestaña de Generar Factura -->
                             <div class="tab-pane fade pt-3" id="profile-settings">
                                 <h5 class="card-title">Generar Factura</h5>
+                                   <p class="small fst-italic">
+                                        Captura correctamente los campos para emitir tu factura.
+                                    </p>
+                                    <br />
                                 <form method="post" action="/facturar">
                                     <!-- Datos del Cliente -->
                                     <div class="card mb-4">
@@ -588,11 +588,20 @@
                                                     <input type="text" class="form-control" id="emisorCP" name="EmisorCP" placeholder="Código Postal">
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-4 mb-3">
-                                                    <label for="emisorRegimen" class="form-label">Régimen Fiscal</label>
-                                                    <input type="text" class="form-control" id="emisorRegimen" name="EmisorRegimen" placeholder="Régimen Fiscal">
-                                                </div>
+                                                <div class="col-md-6">
+                                                <label for="tipoPersona" class="form-label">Regimen Fiscal *</label>
+                                                <select name="TipoPersona" class="form-select" id="tipoPersona" required>
+                                                    <option value="">Seleccione una opción</option>
+                                                   @* @if (ViewBag.RegimenesFiscales != null)
+                                                    {
+                                                        foreach (var regimen in ViewBag.RegimenesFiscales)
+                                                        {
+                                                            <option value="@regimen.TipoPersona" selected="@(Model != null && Model.TipoPersona == regimen.TipoPersona ? "selected" : null)">
+                                                                @($"{regimen.ClaveRegimenFiscal} - {regimen.Descripcion} ({regimen.TipoPersona})")
+                                                            </option>
+                                                        }
+                                                    }*@
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -619,8 +628,19 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4 mb-3">
-                                                    <label for="receptorRegimen" class="form-label">Régimen Fiscal</label>
-                                                    <input type="text" class="form-control" id="receptorRegimen" name="ReceptorRegimen" placeholder="Régimen Fiscal">
+                                                     <label for="tipoPersona" class="form-label">Regimen Fiscal *</label>
+                                                     <select name="TipoPersona" class="form-select" id="tipoPersona" required>
+                                                         <option value="">Seleccione una opción</option>
+                                                         @if (ViewBag.RegimenesFiscales != null)
+                                                           {
+                                                           foreach (var regimen in ViewBag.RegimenesFiscales)
+                                                            {
+                                                             <option value="@regimen.TipoPersona" selected="@(Model != null && Model.TipoPersona == regimen.TipoPersona ? "selected" : null)">
+                                                             @($"{regimen.ClaveRegimenFiscal} - {regimen.Descripcion} ({regimen.TipoPersona})")
+                                                             </option>
+                                                             }
+                                                         }
+                                                     </select>
                                                 </div>
                                                 <div class="col-md-4 mb-3">
                                                     <label for="receptorCalle" class="form-label">Calle</label>
@@ -675,7 +695,7 @@
                                                         }
                                                     </select>
                                                 </div>
-                                                <div class="col-md-4 mb-3">
+                                                    <div class="col-md-6">
                                                     <label for="receptorSucursal" class="form-label">Nombre de Sucursal</label>
                                                     <input type="text" class="form-control" id="receptorSucursal" name="ReceptorSucursal" placeholder="Nombre de Sucursal">
                                                 </div>
@@ -704,7 +724,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4 mb-3">
+                                                    <div class="col-md-6">
                                                     <label for="cuenta" class="form-label">Cuenta</label>
                                                     <input type="text" class="form-control" id="cuenta" name="Cuenta" placeholder="Número de Cuenta">
                                                 </div>
@@ -769,8 +789,9 @@
                                     </div>
                                     <!-- Botón para facturar -->
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-success">Facturar</button>
+                                            <button type="submit" class="btn btn-success"><i class="bi bi-file-text"></i> Emitir Factura</button>
                                     </div>
+                                    <br />
                                 </form>
                             </div>   <!-- Fin pestaña Generar Factura -->
 
@@ -782,6 +803,7 @@
                         </div> <!-- Fin card-body -->
                     </div> <!-- Fin card -->
                 </div> <!-- Fin col-11 -->
+        }
         </main>
 
 

@@ -64,7 +64,6 @@ namespace PRUEBAS_LOGIN.Controllers
                                     RFC = dr["RFC"].ToString(),
                                     RazonSocial = dr["RazonSocial"].ToString(),
                                     CFDI = dr["CFDI"].ToString(),
-                                    Regimen = dr["Regimen"].ToString(),
                                     FechaCreacion = dr["FechaCreacion"] as DateTime?,
                                     FechaModificacion = dr["FechaModificacion"] as DateTime?
                                 };
@@ -91,6 +90,26 @@ namespace PRUEBAS_LOGIN.Controllers
                             ViewBag.UsosCFDI = usosCFDI; // Pasar los datos a la vista
                         }
                     }
+
+                    // Consulta para obtener los datos de RegimenFiscal
+                    string queryRegimenFiscal = "SELECT ClaveRegimenFiscal, Descripcion, TipoPersona FROM dbo.RegimenFiscal";
+                    using (SqlCommand cmd = new SqlCommand(queryRegimenFiscal, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            var regimenesFiscales = new List<RegimenFiscal>();
+                            while (dr.Read())
+                            {
+                                regimenesFiscales.Add(new RegimenFiscal
+                                {
+                                    ClaveRegimenFiscal = dr["ClaveRegimenFiscal"].ToString(),
+                                    Descripcion = dr["Descripcion"].ToString(),
+                                    TipoPersona = dr["TipoPersona"].ToString()
+                                });
+                            }
+                            ViewBag.RegimenesFiscales = regimenesFiscales; // Pasar los datos a la vista
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -103,8 +122,6 @@ namespace PRUEBAS_LOGIN.Controllers
             ViewBag.HasFiscalData = (model != null);
             return View(model);
         }
-
-        // POST: Facturacion/Fiscales (para registrar nuevos datos fiscales)
         [HttpPost]
         [Obsolete]
         public IActionResult Fiscales(Fiscales model)
@@ -156,11 +173,7 @@ namespace PRUEBAS_LOGIN.Controllers
             {
                 model.CFDI = Request.Form["usoCFDI"];
             }
-            if (Request.Form.ContainsKey("regimenFiscal"))
-            {
-                model.Regimen = Request.Form["regimenFiscal"];
-            }
-
+         
             // Asignar las fechas actuales
             model.FechaCreacion = DateTime.Now;
             model.FechaModificacion = DateTime.Now;
@@ -194,7 +207,6 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@RFC", model.RFC);
                     cmd.Parameters.AddWithValue("@RazonSocial", model.RazonSocial);
                     cmd.Parameters.AddWithValue("@CFDI", model.CFDI); // Asegúrate de incluir este parámetro
-                    cmd.Parameters.AddWithValue("@Regimen", model.Regimen);
                     cmd.Parameters.AddWithValue("@FechaCreacion", model.FechaCreacion);
                     cmd.Parameters.AddWithValue("@FechaModificacion", model.FechaModificacion);
 
@@ -282,7 +294,6 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@RFC", model.RFC);
                     cmd.Parameters.AddWithValue("@RazonSocial", model.RazonSocial);
                     cmd.Parameters.AddWithValue("@CFDI", model.CFDI); // Asegúrate de incluir este parámetro
-                    cmd.Parameters.AddWithValue("@Regimen", model.Regimen);
                     cmd.Parameters.AddWithValue("@FechaModificacion", model.FechaModificacion);
 
                     // Parámetros de salida

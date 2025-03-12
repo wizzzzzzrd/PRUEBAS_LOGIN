@@ -1,0 +1,352 @@
+﻿@model IEnumerable<PRUEBAS_LOGIN.Models.Usuario>
+@{
+}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Listado de Usuarios</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.snow.css" rel="stylesheet" />
+    <link href="~/vendor/quill/quill.bubble.css" rel="stylesheet" />
+    <link href="~/vendor/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="~/vendor/simple-datatables/style.css" rel="stylesheet" />
+
+    <!-- Bootstrap 5 desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="~/images/logo.png" alt="Logo" class="img-fluid">
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Buscar" title="Ingrese palabra clave">
+                <button type="submit" title="Buscar"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">@ViewBag.NombreUsuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>@ViewBag.NombreUsuario</h6>
+                            <span>Usuario</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Perfil", "Usuario")">
+                                <i class="bi bi-person"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form method="post" action="@Url.Action("CerrarSesion", "Home")">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="dropdown-item d-flex align-items-center" style="background: none; border: none; cursor: pointer;">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Salir</span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+    </header>
+    <!-- End Header -->
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-grid"></i>
+                    <span>Panel de Control Administrador</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-heading">Páginas</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Perfil", "Usuario")">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Fiscales", "Facturacion")">
+                    <i class="bi bi-receipt"></i>
+                    <span>Facturación</span>
+                </a>
+            </li><!-- End F.A.Q Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Usuarios", "Usuarios")">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Documentos", "Historial")">
+                    <i class="bi bi-file-earmark"></i>
+                    <span>Documentos Emitidos</span>
+                </a>
+            </li><!-- End Error 404 Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Registrar", "Acceso")">
+                    <i class="bi bi-card-list"></i>
+                    <span>Registro</span>
+                </a>
+            </li><!-- End Register Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Login", "Acceso")">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Inicio de Sesión</span>
+                </a>
+            </li><!-- End Login Page Nav -->
+        </ul>
+    </aside><!-- End Sidebar-->
+    <!-- End Sidebar-->
+    <!-- ======= Main Content ======= -->
+    <main id="main" class="main">
+        <div class="container mt-5">
+            <div class="pagetitle">
+                <h1>Listado de Usuarios</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Inicio</a></li>
+                        <li class="breadcrumb-item">Administrador</li>
+                        <li class="breadcrumb-item active">Listado de Usuarios</li>
+                    </ol>
+                </nav>
+            </div><!-- End Page Title -->
+
+            @* Alertas dismissibles para mostrar mensajes *@
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-@(TempData["MensajeTipo"] ?? "info") alert-dismissible fade show" role="alert">
+                    @Html.Raw(TempData["Mensaje"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (ViewData["MensajeError"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @Html.Raw(ViewData["MensajeError"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Botón para abrir el modal de Nuevo Usuario -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#nuevoModal">
+                <i class="bi bi-plus-circle"></i> Nuevo Registro
+            </button>
+
+            <!-- Tabla con los usuarios -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>E-mail</th>
+                        <th>Contraseña</th>
+                        <th>Nombre Completo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.IdUsuario</td>
+                            <td>@item.Correo</td>
+                            <td>********</td>
+                            <td>@item.Nombre</td>
+                            <td>
+                                <!-- Botón para editar datos (correo y nombre) -->
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarDatos_@item.IdUsuario">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <!-- Botón para editar contraseña -->
+                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarClave_@item.IdUsuario">
+                                    <i class="bi bi-key"></i>
+                                </button>
+                                <!-- Botón para eliminar -->
+                                <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <!-- Modal para editar datos (correo y nombre) -->
+                        <div class="modal fade" id="modalEditarDatos_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarDatosLabel_@item.IdUsuario" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="@Url.Action("Editar", "Usuarios")" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarDatosLabel_@item.IdUsuario">Editar Datos</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                            <div class="mb-3">
+                                                <label for="Correo_@item.IdUsuario" class="form-label">E-mail</label>
+                                                <input type="email" class="form-control" id="Correo_@item.IdUsuario" name="Correo" value="@item.Correo" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre Completo</label>
+                                                <input type="text" class="form-control" id="Nombre_@item.IdUsuario" name="Nombre" value="@item.Nombre" required />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal para editar contraseña -->
+                        <div class="modal fade" id="modalEditarClave_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarClaveLabel_@item.IdUsuario" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="@Url.Action("ActualizarClave", "Usuarios")" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarClaveLabel_@item.IdUsuario">Editar Contraseña</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                            <div class="mb-3">
+                                                <label for="NuevaClave_@item.IdUsuario" class="form-label">Nueva Contraseña</label>
+                                                <input type="password" class="form-control" id="NuevaClave_@item.IdUsuario" name="NuevaClave" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="ConfirmarClave_@item.IdUsuario" class="form-label">Confirmar Contraseña</label>
+                                                <input type="password" class="form-control" id="ConfirmarClave_@item.IdUsuario" name="ConfirmarClave" required />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para agregar Nuevo Usuario -->
+        <div class="modal fade" id="nuevoModal" tabindex="-1" aria-labelledby="nuevoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="@Url.Action("Nuevo", "Usuarios")" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="nuevoModalLabel">Nuevo Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="Correo" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="Correo" name="Correo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Clave" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="Clave" name="Clave" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
+                                <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Nombre" class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>    <!-- End Main Content -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>NiceAdmin</span></strong>. Todos los derechos reservados.
+        </div>
+        <div class="credits">
+            Diseñado por <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="~/js/main.js"></script>
+    <!-- Vendor JS Files -->
+    <script src="~/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/vendor/echarts/echarts.min.js"></script>
+    <script src="~/vendor/quill/quill.js"></script>
+    <script src="~/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/vendor/tinymce/tinymce.min.js"></script>
+</body>
+
+</html>
