@@ -30,6 +30,8 @@ namespace PRUEBAS_LOGIN.Controllers
                 return RedirectToAction("Login", "Acceso");
             }
             ViewBag.NombreUsuario = usuario.Nombre;
+            // Asigna también el IdUsuario para la validación en la vista
+            ViewBag.IdUsuario = usuario.IdUsuario;
 
             // Inicializa el modelo
             Fiscales model = null;
@@ -37,7 +39,6 @@ namespace PRUEBAS_LOGIN.Controllers
             {
                 using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
                 {
-                    // Consulta para obtener los datos fiscales del usuario
                     string queryFiscales = "SELECT * FROM dbo.DatosFiscales WHERE IdUsuario = @IdUsuario";
                     using (SqlCommand cmd = new SqlCommand(queryFiscales, cn))
                     {
@@ -71,7 +72,7 @@ namespace PRUEBAS_LOGIN.Controllers
                         }
                     }
 
-                    // Consulta para obtener los datos de UsoCFDI
+                    // Consulta UsoCFDI
                     string queryUsoCFDI = "SELECT IdUsoCFDI, ClaveUsoCFDI, Descripcion FROM dbo.UsoCFDI";
                     using (SqlCommand cmd = new SqlCommand(queryUsoCFDI, cn))
                     {
@@ -87,11 +88,11 @@ namespace PRUEBAS_LOGIN.Controllers
                                     Descripcion = dr["Descripcion"].ToString()
                                 });
                             }
-                            ViewBag.UsosCFDI = usosCFDI; // Pasar los datos a la vista
+                            ViewBag.UsosCFDI = usosCFDI;
                         }
                     }
 
-                    // Consulta para obtener los datos de RegimenFiscal
+                    // Consulta RegimenFiscal
                     string queryRegimenFiscal = "SELECT ClaveRegimenFiscal, Descripcion, TipoPersona FROM dbo.RegimenFiscal";
                     using (SqlCommand cmd = new SqlCommand(queryRegimenFiscal, cn))
                     {
@@ -107,7 +108,7 @@ namespace PRUEBAS_LOGIN.Controllers
                                     TipoPersona = dr["TipoPersona"].ToString()
                                 });
                             }
-                            ViewBag.RegimenesFiscales = regimenesFiscales; // Pasar los datos a la vista
+                            ViewBag.RegimenesFiscales = regimenesFiscales;
                         }
                     }
                 }
@@ -118,10 +119,10 @@ namespace PRUEBAS_LOGIN.Controllers
                 TempData["Mensaje"] = "Error al obtener datos fiscales: " + ex.Message;
             }
 
-            // Si model es nulo, significa que no hay datos registrados para este usuario
             ViewBag.HasFiscalData = (model != null);
             return View(model);
-        }
+        }   
+
         [HttpPost]
         [Obsolete]
         public IActionResult Fiscales(Fiscales model)
@@ -242,6 +243,31 @@ namespace PRUEBAS_LOGIN.Controllers
             }
             return RedirectToAction("Fiscales");
         }
+        public IActionResult Facturas()
+        {
+            // Obtener el usuario de la sesión
+            var usuarioJson = HttpContext.Session.GetString("usuario");
+
+            if (string.IsNullOrEmpty(usuarioJson))
+            {
+                return RedirectToAction("Login", "Acceso");
+            }
+
+            var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
+
+            if (usuario == null)
+            {
+                return RedirectToAction("Login", "Acceso");
+            }
+
+            // Asignar el nombre de usuario al ViewBag
+            ViewBag.NombreUsuario = usuario.Nombre;
+
+            // Si en el futuro deseas pasar también la lista de facturas a la vista,
+            // aquí puedes cargar los datos de facturación (por ejemplo, dummy o reales).
+            return View();
+        }
+
 
         // POST: Facturacion/ActualizarFiscal (para actualizar datos fiscales existentes)
         [HttpPost]

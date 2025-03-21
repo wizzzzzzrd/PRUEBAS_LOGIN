@@ -1,5 +1,13 @@
-﻿@model IEnumerable<PRUEBAS_LOGIN.Models.Usuario>
+﻿@model IEnumerable<PRUEBAS_LOGIN.Models.Factura>
+@using PRUEBAS_LOGIN.Models;
 @{
+    // Datos simulados para la vista de facturas
+    var dummyFacturas = new List<Factura>
+    {
+        new Factura { IdFactura = 1, FechaEmision = DateTime.Now, NombreCliente = "Cliente 1", Total = 100.00m, Estado = "Pendiente" },
+        new Factura { IdFactura = 2, FechaEmision = DateTime.Now.AddDays(-1), NombreCliente = "Cliente 2", Total = 200.00m, Estado = "Pagada" },
+        new Factura { IdFactura = 3, FechaEmision = DateTime.Now.AddDays(-2), NombreCliente = "Cliente 3", Total = 300.00m, Estado = "Cancelada" }
+    };
 }
 <!DOCTYPE html>
 <html lang="es">
@@ -7,7 +15,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Listado de Usuarios</title>
+    <title>Listado de Facturas</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -110,7 +118,6 @@
                 </li><!-- End Profile Nav -->
             </ul>
         </nav><!-- End Icons Navigation -->
-
     </header>
     <!-- End Header -->
     <!-- ======= Sidebar ======= -->
@@ -121,7 +128,8 @@
                     <i class="bi bi-grid"></i>
                     <span>Panel de Control</span>
                 </a>
-            </li><!-- End Dashboard Nav -->
+            </li>
+            <!-- End Dashboard Nav -->
 
             <li class="nav-heading">Páginas</li>
 
@@ -130,14 +138,16 @@
                     <i class="bi bi-person"></i>
                     <span>Perfil</span>
                 </a>
-            </li><!-- End Profile Page Nav -->
+            </li>
+            <!-- End Profile Page Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Fiscales", "Facturacion")">
                     <i class="bi bi-receipt"></i>
                     <span>Facturación</span>
                 </a>
-            </li><!-- End F.A.Q Page Nav -->
+            </li>
+            <!-- End Facturación Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Usuarios", "Usuarios")">
@@ -147,96 +157,102 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="@Url.Action("Facturas", "Facturacion")">
-                    <i class="bi bi-file-earmark-text"></i>    
-                    <span>Facturas Emitidos</span>
+                <a class="nav-link" href="@Url.Action("Facturas", "Facturacion")">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Facturas Emitidas</span>
                 </a>
-            </li><!-- End Error 404 Page Nav -->
+            </li>
+            <!-- End Facturas Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Registrar", "Acceso")">
                     <i class="bi bi-card-list"></i>
                     <span>Registro</span>
                 </a>
-            </li><!-- End Register Page Nav -->
+            </li>
+            <!-- End Register Page Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Login", "Acceso")">
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span>Inicio de Sesión</span>
                 </a>
-            </li><!-- End Login Page Nav -->
+            </li>
+            <!-- End Login Page Nav -->
         </ul>
-    </aside><!-- End Sidebar-->
+    </aside>
     <!-- End Sidebar-->
     <!-- ======= Main Content ======= -->
     <main id="main" class="main">
         <div class="container mt-5">
             <div class="pagetitle">
-                <h1>Listado de Usuarios</h1>
+                <h1>Listado de Facturas</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Inicio</a></li>
                         <li class="breadcrumb-item">Administrador</li>
-                        <li class="breadcrumb-item active">Listado de Usuarios</li>
+                        <li class="breadcrumb-item active">Listado de Facturas</li>
                     </ol>
                 </nav>
-            </div><!-- End Page Title -->
+            </div>
+            <!-- End Page Title -->
             <br />
 
-            @* Alertas dismissibles para mostrar mensajes *@
+            @* Alertas para mostrar mensajes *@
             @if (TempData["Mensaje"] != null)
             {
                 <div class="alert alert-@(TempData["MensajeTipo"] ?? "info") alert-dismissible fade show" role="alert">
                     @Html.Raw(TempData["Mensaje"])
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             }
             @if (ViewData["MensajeError"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     @Html.Raw(ViewData["MensajeError"])
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             }
 
-            <!-- Botón para abrir el modal de Nuevo Usuario -->
-            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#nuevoModal">
-                <i class="bi bi-plus-circle"></i> Nuevo Registro
+            <!-- Botón para crear nueva factura (opcional, si aplica) -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#nuevaFacturaModal">
+                <i class="bi bi-plus-circle"></i> Nueva Factura
             </button>
 
-            <!-- Tabla con los usuarios -->
+            <!-- Tabla de Facturas -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>E-mail</th>
-                        <th>Contraseña</th>
-                        <th>Nombre Completo</th>
+                        <th>ID Factura</th>
+                        <th>Fecha Emisión</th>
+                        <th>Cliente</th>
+                        <th>Monto Total</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var factura in dummyFacturas)
                     {
                         <tr>
-                            <td>@item.IdUsuario</td>
-                            <td>@item.Correo</td>
-                            <td>********</td>
-                            <td>@item.Nombre</td>
+                            <td>@factura.IdFactura</td>
+                            <td>@factura.FechaEmision.ToString("dd/MM/yyyy")</td>
+                            <td>@factura.NombreCliente</td>
+                            <td>@factura.Total.ToString("C")</td>
+                            <td>@factura.Estado</td>
                             <td>
-                                <!-- Botón para editar datos (correo y nombre) -->
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarDatos_@item.IdUsuario">
+                                <!-- Botón para ver detalles de la factura -->
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalle_@factura.IdFactura">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <!-- Botón para editar la factura -->
+                                <a href="@Url.Action("Editar", "Facturacion", new { id = factura.IdFactura })" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil"></i>
-                                </button>
-                                <!-- Botón para editar contraseña -->
-                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarClave_@item.IdUsuario">
-                                    <i class="bi bi-key"></i>
-                                </button>
-                                <!-- Botón para eliminar -->
-                                <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
+                                </a>
+                                <!-- Botón para eliminar la factura -->
+                                <form action="@Url.Action("Eliminar", "Facturacion")" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                    <input type="hidden" name="IdFactura" value="@factura.IdFactura" />
                                     <button type="submit" class="btn btn-danger btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -244,62 +260,24 @@
                             </td>
                         </tr>
 
-                        <!-- Modal para editar datos (correo y nombre) -->
-                        <div class="modal fade" id="modalEditarDatos_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarDatosLabel_@item.IdUsuario" aria-hidden="true">
+                        <!-- Modal para ver el detalle de la factura -->
+                        <div class="modal fade" id="modalDetalle_@factura.IdFactura" tabindex="-1" aria-labelledby="modalDetalleLabel_@factura.IdFactura" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <form action="@Url.Action("Editar", "Usuarios")" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modalEditarDatosLabel_@item.IdUsuario">Editar Datos</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
-                                            <div class="mb-3">
-                                                <label for="Correo_@item.IdUsuario" class="form-label">E-mail</label>
-                                                <input type="email" class="form-control" id="Correo_@item.IdUsuario" name="Correo" value="@item.Correo" required />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre Completo</label>
-                                                <input type="text" class="form-control" id="Nombre_@item.IdUsuario" name="Nombre" value="@item.Nombre" required />
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal para editar contraseña -->
-                        <div class="modal fade" id="modalEditarClave_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarClaveLabel_@item.IdUsuario" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form action="@Url.Action("ActualizarClave", "Usuarios")" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modalEditarClaveLabel_@item.IdUsuario">Editar Contraseña</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
-                                            <div class="mb-3">
-                                                <label for="NuevaClave_@item.IdUsuario" class="form-label">Nueva Contraseña</label>
-                                                <input type="password" class="form-control" id="NuevaClave_@item.IdUsuario" name="NuevaClave" required />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="ConfirmarClave_@item.IdUsuario" class="form-label">Confirmar Contraseña</label>
-                                                <input type="password" class="form-control" id="ConfirmarClave_@item.IdUsuario" name="ConfirmarClave" required />
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                            <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
-                                        </div>
-                                    </form>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalDetalleLabel_@factura.IdFactura">Detalle de Factura #@factura.IdFactura</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Fecha Emisión:</strong> @factura.FechaEmision.ToString("dd/MM/yyyy")</p>
+                                        <p><strong>Cliente:</strong> @factura.NombreCliente</p>
+                                        <p><strong>Monto Total:</strong> @factura.Total.ToString("C")</p>
+                                        <p><strong>Estado:</strong> @factura.Estado</p>
+                                        @* Se pueden agregar más detalles según la información disponible *@
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -308,43 +286,48 @@
             </table>
         </div>
 
-        <!-- Modal para agregar Nuevo Usuario -->
-        <div class="modal fade" id="nuevoModal" tabindex="-1" aria-labelledby="nuevoModalLabel" aria-hidden="true">
+        <!-- Modal para crear Nueva Factura (opcional) -->
+        <div class="modal fade" id="nuevaFacturaModal" tabindex="-1" aria-labelledby="nuevaFacturaModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="@Url.Action("Nuevo", "Usuarios")" method="post">
+                    <form action="@Url.Action("NuevaFactura", "Facturacion")" method="post">
                         @Html.AntiForgeryToken()
                         <div class="modal-header">
-                            <h5 class="modal-title" id="nuevoModalLabel">Nuevo Usuario</h5>
+                            <h5 class="modal-title" id="nuevaFacturaModalLabel">Nueva Factura</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="Correo" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" id="Correo" name="Correo" required>
+                                <label for="Cliente" class="form-label">Cliente</label>
+                                <input type="text" class="form-control" id="Cliente" name="Cliente" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Clave" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="Clave" name="Clave" required>
+                                <label for="FechaEmision" class="form-label">Fecha de Emisión</label>
+                                <input type="date" class="form-control" id="FechaEmision" name="FechaEmision" required>
                             </div>
                             <div class="mb-3">
-                                <label for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
-                                <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" required>
+                                <label for="Total" class="form-label">Monto Total</label>
+                                <input type="number" step="0.01" class="form-control" id="Total" name="Total" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Nombre" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                                <label for="Estado" class="form-label">Estado</label>
+                                <select class="form-select" id="Estado" name="Estado" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Pagada">Pagada</option>
+                                    <option value="Cancelada">Cancelada</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                            <button type="submit" class="btn btn-primary">Crear Factura</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    </main>    <!-- End Main Content -->
+    </main>
+    <!-- End Main Content -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

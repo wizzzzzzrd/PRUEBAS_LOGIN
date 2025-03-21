@@ -59,65 +59,131 @@
                 <button type="submit" title="Buscar"><i class="bi bi-search"></i></button>
             </form>
         </div><!-- End Search Bar -->
+        @if (Model.IdUsuario == 6)
+        {
+            <nav class="header-nav ms-auto">
+                <ul class="d-flex align-items-center">
+                    <li class="nav-item dropdown pe-3">
+                        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                            <span class="d-none d-md-block dropdown-toggle ps-2">@ViewBag.NombreUsuario</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                            <li class="dropdown-header">
+                                <h6>@ViewBag.NombreUsuario</h6>
+                                <span>Administrador</span>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-        <nav class="header-nav ms-auto">
-            <ul class="d-flex align-items-center">
-                <li class="nav-item dropdown pe-3">
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <span class="d-none d-md-block dropdown-toggle ps-2">@ViewBag.NombreUsuario</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                        <li class="dropdown-header">
-                            <h6>@ViewBag.NombreUsuario</h6>
-                            <span>Usuario</span>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Perfil", "Usuario")">
+                                    <i class="bi bi-person"></i>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Perfil", "Usuario")">
-                                <i class="bi bi-person"></i>
-                                <span>Mi Perfil</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Usuarios", "Usuarios")">
+                                    <i class="bi bi-people"></i>
+                                    <span>Usuarios</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Documentos", "Historial")">
-                                <i class="bi bi-file-earmark"></i>
-                                <span>Documentos Emitidos</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Facturas", "Facturacion")">
+                                    <i class="bi bi-receipt"></i>
+                                    <span>Facturas Emitidas</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="post" action="@Url.Action("CerrarSesion", "Home")">
+                                    @Html.AntiForgeryToken() <!-- Token anti-CSRF -->
+                                    <button type="submit" class="dropdown-item d-flex align-items-center" style="background: none; border: none; cursor: pointer;">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        <span>Salir</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul><!-- End Profile Dropdown Items -->
+                    </li><!-- End Profile Nav -->
+                </ul>
+            </nav>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Fiscales", "Facturacion")">
-                                <i class="bi bi-receipt"></i>
-                                <span>Facturación</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <form method="post" action="@Url.Action("CerrarSesion", "Home")">
-                                @Html.AntiForgeryToken() <!-- Token anti-CSRF -->
-                                <button type="submit" class="dropdown-item d-flex align-items-center" style="background: none; border: none; cursor: pointer;">
-                                    <i class="bi bi-box-arrow-right"></i>
-                                    <span>Salir</span>
-                                </button>
-                            </form>
-                        </li>
+            <!-- End Icons Navigation -->
+        }
+        else
+        {
+            <nav class="header-nav ms-auto">
+                <ul class="d-flex align-items-center">
+                    <li class="nav-item dropdown pe-3">
+                        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                            <span class="d-none d-md-block dropdown-toggle ps-2">@ViewBag.NombreUsuario</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                            <li class="dropdown-header">
+                                <h6>@ViewBag.NombreUsuario</h6>
+                                <span>Usuario</span>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-                    </ul><!-- End Profile Dropdown Items -->
-                </li><!-- End Profile Nav -->
-            </ul>
-        </nav><!-- End Icons Navigation -->
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Perfil", "Usuario")">
+                                    <i class="bi bi-person"></i>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Documentos", "Historial")">
+                                    <i class="bi bi-file-earmark"></i>
+                                    <span>Documentos Emitidos</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Fiscales", "Facturacion")">
+                                    <i class="bi bi-receipt"></i>
+                                    <span>Facturación</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="post" action="@Url.Action("CerrarSesion", "Home")">
+                                    @Html.AntiForgeryToken() <!-- Token anti-CSRF -->
+                                    <button type="submit" class="dropdown-item d-flex align-items-center" style="background: none; border: none; cursor: pointer;">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        <span>Salir</span>
+                                    </button>
+                                </form>
+                            </li>
+
+                        </ul><!-- End Profile Dropdown Items -->
+                    </li><!-- End Profile Nav -->
+                </ul>
+            </nav>
+
+            <!-- End Icons Navigation -->
+        }
     </header><!-- End Header -->
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
@@ -140,24 +206,43 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Fiscales", "Facturacion")">
-                    <i class="bi bi-file-earmark-text"></i>
+                    <i class="bi bi-receipt"></i>
                     <span>Facturación</span>
                 </a>
             </li><!-- End F.A.Q Page Nav -->
+            @if (Model.IdUsuario == 6)
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Usuarios", "Usuarios")">
+                        <i class="bi bi-people"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="@Url.Action("Ventas", "Historial")">
-                    <i class="bi bi-currency-dollar"></i>
-                    <span>Ventas</span>
-                </a>
-            </li><!-- End Contact Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Facturas", "Facturacion")">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Facturas Emitidos</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Ventas", "Historial")">
+                        <i class="bi bi-currency-dollar"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="@Url.Action("Documentos", "Historial")">
-                    <i class="bi bi-file-earmark"></i>
-                    <span>Documentos Emitidos</span>
-                </a>
-            </li><!-- End Error 404 Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Documentos", "Historial")">
+                        <i class="bi bi-file-earmark"></i>
+                        <span>Documentos Emitidos</span>
+                    </a>
+                </li>
+            }
+
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="@Url.Action("Registrar", "Acceso")">
