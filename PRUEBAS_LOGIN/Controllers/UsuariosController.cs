@@ -6,16 +6,16 @@ using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
 using PRUEBAS_LOGIN.Models;
-using PRUEBAS_LOGIN.Permisos; // Para el atributo [ValidarSesion]
+using PRUEBAS_LOGIN.Permisos;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Data.Common;
 
 namespace PRUEBAS_LOGIN.Controllers
 {
     [ValidarSesion]
     public class UsuariosController : Controller
     {
-        // Método auxiliar para asignar el nombre del usuario al ViewBag desde la sesión
         private void CargarNombreUsuarioEnViewBag()
         {
             var usuarioJson = HttpContext.Session.GetString("usuario");
@@ -30,7 +30,6 @@ namespace PRUEBAS_LOGIN.Controllers
             }
         }
 
-        // Acción para listar los usuarios en la vista "Usuarios"
         [Obsolete]
         public IActionResult Usuarios()
         {
@@ -48,48 +47,41 @@ namespace PRUEBAS_LOGIN.Controllers
                     {
                         while (dr.Read())
                         {
-                            Usuario oUsuario = new Usuario();
-                            oUsuario.IdUsuario = Convert.ToInt32(dr["IdUsuario"]);
-                            oUsuario.Correo = dr["Correo"].ToString();
-                            oUsuario.Nombre = dr["Nombre"].ToString();
-                            // La contraseña no se muestra por seguridad
-                            lista.Add(oUsuario);
+                            lista.Add(new Usuario
+                            {
+                                IdUsuario = Convert.ToInt32(dr["IdUsuario"]),
+                                Correo = dr["Correo"].ToString(),
+                                Nombre = dr["Nombre"].ToString(),
+                                ApellidoPaterno = dr["ApellidoPaterno"].ToString(),
+                                ApellidoMaterno = dr["ApellidoMaterno"].ToString()
+                            });
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                ViewData["MensajeError"] = "Error al listar usuarios: " + ex.Message;
+                TempData["Mensaje"] = "Error al listar usuarios: " + ex.Message;
+                TempData["MensajeTipo"] = "danger";
             }
             return View(lista);
         }
 
-        // GET: Usuarios/Nuevo
-        public IActionResult Nuevo()
-        {
-            CargarNombreUsuarioEnViewBag();
-            return View();
-        }
-
-        // POST: Usuarios/Nuevo
         [HttpPost]
         [Obsolete]
         public IActionResult Nuevo(Usuario oUsuario)
         {
             CargarNombreUsuarioEnViewBag();
 
-            // Validar que las contraseñas coincidan
             if (oUsuario.Clave != oUsuario.ConfirmarClave)
             {
                 TempData["Mensaje"] = "Las contraseñas no coinciden";
                 TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
+                return RedirectToAction("Usuarios");
             }
-            // Convertir la clave a SHA256
+
+            // Encriptar la clave
             oUsuario.Clave = ConvertirClaveSha256(oUsuario.Clave);
-            bool registrado;
-            string mensaje;
 
             try
             {
@@ -97,46 +89,63 @@ namespace PRUEBAS_LOGIN.Controllers
                 {
                     SqlCommand cmd = new SqlCommand("sp_RegistrarUsuario", cn);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@Correo", oUsuario.Correo);
                     cmd.Parameters.AddWithValue("@Clave", oUsuario.Clave);
                     cmd.Parameters.AddWithValue("@Nombre", oUsuario.Nombre);
+                    cmd.Parameters.AddWithValue("@ApellidoPaterno", oUsuario.ApellidoPaterno);
+                    // Si ApellidoMaterno está vacío, se envía DBNull.Value
+                    cmd.Parameters.AddWithValue("@ApellidoMaterno", string.IsNullOrWhiteSpace(oUsuario.ApellidoMaterno) ? (object)DBNull.Value : oUsuario.ApellidoMaterno);
+                    // Ajusta este valor según la lógica de tu aplicación (por ejemplo, el usuario logueado o un valor predeterminado)
+                    cmd.Parameters.AddWithValue("@UsuarioCreacion", 1);
+
+                    // Parámetros de salida
                     cmd.Parameters.Add("Registrado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.NVarChar, 100).Direction = ParameterDirection.Output;
+
                     cn.Open();
                     cmd.ExecuteNonQuery();
-                    registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
-                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    bool registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
+                    string mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    if (!registrado)
+                    {
+                        // Manejar el caso de correo duplicado
+                        if (mensaje.Contains("correo") || mensaje.Contains("duplicado"))
+                        {
+                            mensaje = "El correo electrónico ya está registrado. Por favor use otro correo.";
+                        }
+
+                        TempData["Mensaje"] = mensaje;
+                        TempData["MensajeTipo"] = "danger";
+                        return RedirectToAction("Usuarios");
+                    }
+
+                    TempData["Mensaje"] = mensaje;
+                    TempData["MensajeTipo"] = "success";
+                    return RedirectToAction("Usuarios");
                 }
+            }
+            catch (DbException dbEx) when (dbEx is SqlException sqlEx && (sqlEx.Number == 2627 || sqlEx.Number == 2601))
+            {
+                TempData["Mensaje"] = "Error: El correo electrónico ya está registrado.";
+                TempData["MensajeTipo"] = "danger";
+                return RedirectToAction("Usuarios");
             }
             catch (Exception ex)
             {
                 TempData["Mensaje"] = "Error al registrar el usuario: " + ex.Message;
                 TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
+                return RedirectToAction("Usuarios");
             }
-
-            if (!registrado)
-            {
-                // Por ejemplo, si el correo ya existe el SP devuelve "El correo ya está registrado."
-                TempData["Mensaje"] = mensaje;
-                TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
-            }
-
-            TempData["Mensaje"] = mensaje;
-            TempData["MensajeTipo"] = "success";
-            return RedirectToAction("Usuarios", "Usuarios");
         }
 
-        // POST: Usuarios/Editar
         [HttpPost]
         [Obsolete]
         public IActionResult Editar(Usuario oUsuario)
         {
             CargarNombreUsuarioEnViewBag();
-
-            bool registrado;
-            string mensaje;
 
             try
             {
@@ -144,38 +153,60 @@ namespace PRUEBAS_LOGIN.Controllers
                 {
                     SqlCommand cmd = new SqlCommand("sp_ActualizarCorreoYNombre", cn);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@IdUsuario", oUsuario.IdUsuario);
                     cmd.Parameters.AddWithValue("@Correo", oUsuario.Correo);
                     cmd.Parameters.AddWithValue("@Nombre", oUsuario.Nombre);
+                    cmd.Parameters.AddWithValue("@ApellidoPaterno", oUsuario.ApellidoPaterno);
+                    cmd.Parameters.AddWithValue("@ApellidoMaterno", string.IsNullOrWhiteSpace(oUsuario.ApellidoMaterno) ? (object)DBNull.Value : oUsuario.ApellidoMaterno);
+
+                    // Parámetros de salida
                     cmd.Parameters.Add("Registrado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
+
                     cn.Open();
                     cmd.ExecuteNonQuery();
-                    registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
-                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    bool registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
+                    string mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    if (!registrado)
+                    {
+                        // Manejar específicamente el caso de correo duplicado
+                        if (mensaje.Contains("correo") || mensaje.Contains("duplicado"))
+                        {
+                            mensaje = "El correo electrónico ya está registrado por otro usuario. Por favor use otro correo.";
+                        }
+
+                        TempData["Mensaje"] = mensaje;
+                        TempData["MensajeTipo"] = "danger";
+                        return RedirectToAction("Usuarios");
+                    }
+
+                    TempData["Mensaje"] = "Usuario actualizado correctamente";
+                    TempData["MensajeTipo"] = "success";
+                    return RedirectToAction("Usuarios");
                 }
+            }
+            catch (DbException dbEx) when (dbEx is SqlException sqlEx && (sqlEx.Number == 2627 || sqlEx.Number == 2601))
+            {
+                TempData["Mensaje"] = "El correo electrónico ya está registrado por un usuario, Porfavor intenta con otro.";
+                TempData["MensajeTipo"] = "danger";
+                return RedirectToAction("Usuarios");
             }
             catch (Exception ex)
             {
                 TempData["Mensaje"] = "Error al actualizar el usuario: " + ex.Message;
                 TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
+                return RedirectToAction("Usuarios");
             }
-
-            TempData["Mensaje"] = mensaje;
-            TempData["MensajeTipo"] = registrado ? "success" : "danger";
-            return RedirectToAction("Usuarios", "Usuarios");
         }
 
-        // POST: Usuarios/Eliminar
         [HttpPost]
         [Obsolete]
         public IActionResult Eliminar(int IdUsuario)
         {
             CargarNombreUsuarioEnViewBag();
-
-            bool registrado;
-            string mensaje;
 
             try
             {
@@ -186,24 +217,26 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     cmd.Parameters.Add("Registrado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.NVarChar, 100).Direction = ParameterDirection.Output;
+
                     cn.Open();
                     cmd.ExecuteNonQuery();
-                    registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
-                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    bool registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
+                    string mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    TempData["Mensaje"] = mensaje;
+                    TempData["MensajeTipo"] = registrado ? "success" : "danger";
+                    return RedirectToAction("Usuarios");
                 }
             }
             catch (Exception ex)
             {
                 TempData["Mensaje"] = "Error al eliminar el usuario: " + ex.Message;
                 TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
+                return RedirectToAction("Usuarios");
             }
-            TempData["Mensaje"] = mensaje;
-            TempData["MensajeTipo"] = registrado ? "success" : "danger";
-            return RedirectToAction("Usuarios", "Usuarios");
         }
 
-        // POST: Usuarios/ActualizarClave
         [HttpPost]
         [Obsolete]
         public IActionResult ActualizarClave(int IdUsuario, string NuevaClave, string ConfirmarClave)
@@ -214,10 +247,11 @@ namespace PRUEBAS_LOGIN.Controllers
             {
                 TempData["Mensaje"] = "Las contraseñas no coinciden.";
                 TempData["MensajeTipo"] = "danger";
-                return RedirectToAction("Usuarios", "Usuarios");
+                return RedirectToAction("Usuarios");
             }
+
             string claveEncriptada = ConvertirClaveSha256(NuevaClave);
-            string mensaje = "";
+
             try
             {
                 using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
@@ -226,26 +260,30 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     cmd.Parameters.AddWithValue("@Clave", claveEncriptada);
+
                     SqlParameter mensajeParam = new SqlParameter("@Mensaje", SqlDbType.NVarChar, 100)
                     {
                         Direction = ParameterDirection.Output
                     };
                     cmd.Parameters.Add(mensajeParam);
+
                     cn.Open();
                     cmd.ExecuteNonQuery();
-                    mensaje = mensajeParam.Value.ToString();
+
+                    string mensaje = mensajeParam.Value.ToString();
+                    TempData["Mensaje"] = mensaje;
+                    TempData["MensajeTipo"] = "success";
+                    return RedirectToAction("Usuarios");
                 }
             }
             catch (Exception ex)
             {
-                mensaje = "Error al actualizar la contraseña: " + ex.Message;
+                TempData["Mensaje"] = "Error al actualizar la contraseña: " + ex.Message;
+                TempData["MensajeTipo"] = "danger";
+                return RedirectToAction("Usuarios");
             }
-            TempData["Mensaje"] = mensaje;
-            TempData["MensajeTipo"] = "success";
-            return RedirectToAction("Usuarios", "Usuarios");
         }
 
-        // Método para convertir una cadena a SHA256 (utilizado en el registro y actualización de contraseña)
         private string ConvertirClaveSha256(string texto)
         {
             using (SHA256 sha256Hash = SHA256.Create())

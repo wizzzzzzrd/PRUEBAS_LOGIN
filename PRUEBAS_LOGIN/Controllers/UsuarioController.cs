@@ -15,28 +15,29 @@ namespace PRUEBAS_LOGIN.Controllers
         // GET: Usuario/Perfil
         public IActionResult Perfil()
         {
-            // Verifica si existe la sesión (similar al HomeController)
             var usuarioJson = HttpContext.Session.GetString("usuario");
             if (string.IsNullOrEmpty(usuarioJson))
             {
                 return RedirectToAction("Login", "Acceso");
             }
 
-            // Deserializamos el objeto 'Usuario'
             var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
             if (usuario == null)
             {
                 return RedirectToAction("Login", "Acceso");
             }
 
-            // Opcional: Puedes asignar el nombre a ViewBag si lo deseas
             ViewBag.NombreUsuario = usuario.Nombre;
+            ViewBag.NombreCompleto = $"{usuario.Nombre} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}".Trim();
+
             return View(usuario);
         }
 
+
         // POST: Usuario/ActualizarCorreoYNombre
-        [HttpPost]
+        [HttpPost]  
         [Obsolete]
+
         public IActionResult ActualizarCorreoYNombre(Usuario model)
         {
             // Verificar que la sesión esté activa
@@ -64,24 +65,21 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@IdUsuario", model.IdUsuario);
                     cmd.Parameters.AddWithValue("@Correo", model.Correo);
                     cmd.Parameters.AddWithValue("@Nombre", model.Nombre);
+                    cmd.Parameters.AddWithValue("@ApellidoPaterno", model.ApellidoPaterno);
 
-                    SqlParameter registradoParam = new SqlParameter("@Registrado", SqlDbType.Bit)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(registradoParam);
+                    // Si ApellidoMaterno es null o vacío, se envía DBNull.Value
+                    cmd.Parameters.AddWithValue("@ApellidoMaterno",
+                        string.IsNullOrWhiteSpace(model.ApellidoMaterno) ? (object)DBNull.Value : model.ApellidoMaterno);
 
-                    SqlParameter mensajeParam = new SqlParameter("@Mensaje", SqlDbType.VarChar, 100)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(mensajeParam);
+                    // Parámetros de salida
+                    cmd.Parameters.Add(new SqlParameter("@Registrado", SqlDbType.Bit) { Direction = ParameterDirection.Output });
+                    cmd.Parameters.Add(new SqlParameter("@Mensaje", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
 
                     cn.Open();
                     cmd.ExecuteNonQuery();
 
-                    bool registrado = Convert.ToBoolean(registradoParam.Value);
-                    string mensaje = mensajeParam.Value.ToString();
+                    bool registrado = Convert.ToBoolean(cmd.Parameters["@Registrado"].Value);
+                    string mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
 
                     TempData["TipoMensaje"] = registrado ? "success" : "danger";
                     TempData["Mensaje"] = mensaje;
@@ -92,6 +90,12 @@ namespace PRUEBAS_LOGIN.Controllers
                         HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(model));
                     }
                 }
+            }
+            catch (SqlException ex) when (ex.Number == 2627 || ex.Number == 2601)
+            {
+                // Error por clave duplicada
+                TempData["TipoMensaje"] = "danger";
+                TempData["Mensaje"] = "El correo electrónico ingresado ya existe, intenta con otro.";
             }
             catch (Exception ex)
             {

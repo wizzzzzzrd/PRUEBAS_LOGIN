@@ -15,7 +15,14 @@ namespace PRUEBAS_LOGIN.Models
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         public string Nombre { get; set; }
+        public string ApellidoPaterno { get; set; }  // VARCHAR(100)
+        public string ApellidoMaterno { get; set; }  // VARCHAR(100) (NULL permitido)
+        public int Estatus { get; set; }             // INT (NOT NULL, DEFAULT 1)
+        public int UsuarioCreacion { get; set; }     // INT (NOT NULL)
+
+        public DateTime FechaCreacion { get; set; }  // DATETIME (NOT NULL, DEFAULT GETDATE())
 
         public string ConfirmarClave { get; set; }
+
     }
 }

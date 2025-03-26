@@ -284,7 +284,8 @@ else
             <section class="section profile">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-xl-8 w-80">
+                        <!-- Se amplía el contenedor a un máximo de 800px -->
+                        <div class="col-xl-10" style="max-width: 800px;">
                             <div class="card">
                                 <div class="card-body pt-3">
                                     <!-- Bordered Tabs -->
@@ -308,17 +309,20 @@ else
                                     </ul>
 
                                     <div class="tab-content pt-2">
+                                        <!-- Resumen -->
                                         <div class="tab-pane fade show active profile-overview" id="profile-overview">
                                             <h5 class="card-title">Recuerda</h5>
                                             <p class="small fst-italic">
-                                                Los datos a modificar deben ser verdaderos; Estos están protegidos y cifrados para el acceso restringido de la plataforma.
+                                                Los datos a modificar deben ser verdaderos; estos están protegidos y cifrados para el acceso restringido de la plataforma.
                                             </p>
 
                                             <h5 class="card-title">Detalles del Perfil</h5>
 
                                             <div class="row">
                                                 <div class="col-lg-3 col-md-4 label">Nombre Completo</div>
-                                                <div class="col-lg-9 col-md-8">@Model.Nombre</div>
+                                                <div class="col-lg-9 col-md-8">
+                                                    @($"{Model.Nombre} {Model.ApellidoPaterno} {Model.ApellidoMaterno}")
+                                                </div>
                                             </div>
 
                                             <div class="row">
@@ -344,6 +348,7 @@ else
                                             </div>
                                         }
 
+                                        <!-- Editar Perfil -->
                                         <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
                                             @using (Html.BeginForm("ActualizarCorreoYNombre", "Usuario", FormMethod.Post))
                                             {
@@ -353,28 +358,44 @@ else
                                                     ¡RECUERDA! Es necesario llenar el campo de correo aunque este no se cambie.
                                                 </div>
 
+                                                <!-- Primera fila: Nombre y Apellido Paterno -->
                                                 <div class="row mb-3">
-                                                    <label for="Nombre" class="col-md-4 col-lg-3 col-form-label">Nombre Completo</label>
-                                                    <div class="col-md-8 col-lg-9">
+                                                    <div class="col-md-6">
+                                                        <label for="Nombre" class="col-form-label">Nombre</label>
                                                         @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre" })
                                                         @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <label for="ApellidoPaterno" class="col-form-label">Apellido Paterno</label>
+                                                        @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", id = "ApellidoPaterno" })
+                                                        @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
 
+                                                <!-- Segunda fila: Apellido Materno y Correo -->
                                                 <div class="row mb-3">
-                                                    <label for="Correo" class="col-md-4 col-lg-3 col-form-label">Correo Electrónico</label>
-                                                    <div class="col-md-8 col-lg-9">
+                                                    <div class="col-md-6">
+                                                        <label for="ApellidoMaterno" class="col-form-label">Apellido Materno</label>
+                                                        @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control", id = "ApellidoMaterno" })
+                                                        @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger" })
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="Correo" class="col-form-label">Correo Electrónico</label>
                                                         @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo" })
                                                         @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-
+                                               <br>
+                                                
                                                 <div class="text-center">
-                                                    <button type="submit" class="btn btn-primary" style="width: 80%;"><i class="bi bi-save"></i> Guardar Cambios</button>
+                                                    <button type="submit" class="btn btn-primary" style="width: 80%;">
+                                                        <i class="bi bi-save"></i> Guardar Cambios
+                                                    </button>
                                                 </div>
                                             }
                                         </div>
 
+                                        <!-- Cambiar Contraseña -->
                                         <div class="tab-pane fade pt-3" id="profile-change-password">
                                             @using (Html.BeginForm("ActualizarClave", "Usuario", FormMethod.Post))
                                             {
@@ -385,7 +406,12 @@ else
                                                         Nueva Contraseña
                                                     </label>
                                                     <div class="col-md-8 col-lg-9">
-                                                        <input name="newPassword" type="password" class="form-control" id="newPassword" required />
+                                                        <div class="input-group">
+                                                            <input name="newPassword" type="password" class="form-control" id="newPassword" required />
+                                                            <span class="input-group-text" id="toggleNewPassword" role="button">
+                                                                <i class="bi bi-eye"></i>
+                                                            </span>
+                                                        </div>
                                                         @Html.ValidationMessage("newPassword", "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
@@ -395,17 +421,51 @@ else
                                                         Confirmar Nueva Contraseña
                                                     </label>
                                                     <div class="col-md-8 col-lg-9">
-                                                        <input name="renewPassword" type="password" class="form-control" id="renewPassword" required />
+                                                        <div class="input-group">
+                                                            <input name="renewPassword" type="password" class="form-control" id="renewPassword" required />
+                                                            <span class="input-group-text" id="toggleRenewPassword" role="button">
+                                                                <i class="bi bi-eye"></i>
+                                                            </span>
+                                                        </div>
                                                         @Html.ValidationMessage("renewPassword", "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
 
                                                 <div class="text-center">
-                                                    <button type="submit" class="btn btn-primary" style="width: 80%;"><i class="bi bi-save"></i> Guardar Contraseña</button>
+                                                    <button type="submit" class="btn btn-primary w-75">
+                                                        <i class="bi bi-save"></i> Guardar Contraseña
+                                                    </button>
                                                 </div>
                                             }
                                         </div>
-                                    </div>
+
+                                        <script>
+                                            // Toggle para "Nueva Contraseña"
+                                            document.getElementById('toggleNewPassword').addEventListener('click', function () {
+                                                const newPasswordInput = document.getElementById('newPassword');
+                                                if (newPasswordInput.type === 'password') {
+                                                    newPasswordInput.type = 'text';
+                                                    this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                                                } else {
+                                                    newPasswordInput.type = 'password';
+                                                    this.innerHTML = '<i class="bi bi-eye"></i>';
+                                                }
+                                            });
+
+                                            // Toggle para "Confirmar Nueva Contraseña"
+                                            document.getElementById('toggleRenewPassword').addEventListener('click', function () {
+                                                const renewPasswordInput = document.getElementById('renewPassword');
+                                                if (renewPasswordInput.type === 'password') {
+                                                    renewPasswordInput.type = 'text';
+                                                    this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                                                } else {
+                                                    renewPasswordInput.type = 'password';
+                                                    this.innerHTML = '<i class="bi bi-eye"></i>';
+                                                }
+                                            });
+                                        </script>
+
+                                    </div><!-- End tab-content -->
                                 </div>
                             </div>
                         </div>

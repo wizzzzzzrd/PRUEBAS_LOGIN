@@ -223,7 +223,7 @@
                             <td>@item.IdUsuario</td>
                             <td>@item.Correo</td>
                             <td>********</td>
-                            <td>@item.Nombre</td>
+                            <td>@($"{item.Nombre} {item.ApellidoPaterno} {item.ApellidoMaterno}".Trim())</td>
                             <td>
                                 <!-- Botón para editar datos (correo y nombre) -->
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarDatos_@item.IdUsuario">
@@ -233,18 +233,21 @@
                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarClave_@item.IdUsuario">
                                     <i class="bi bi-key"></i>
                                 </button>
-                                <!-- Botón para eliminar -->
-                                <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <!-- Botón para eliminar (se muestra solo si el IdUsuario es distinto de 6) -->
+                                @if (item.IdUsuario != 6)
+                                {
+                                    <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                }
                             </td>
                         </tr>
 
-                        <!-- Modal para editar datos (correo y nombre) -->
+                        <!-- Modal para editar datos (correo, nombre y apellidos) -->
                         <div class="modal fade" id="modalEditarDatos_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarDatosLabel_@item.IdUsuario" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -261,8 +264,16 @@
                                                 <input type="email" class="form-control" id="Correo_@item.IdUsuario" name="Correo" value="@item.Correo" required />
                                             </div>
                                             <div class="mb-3">
-                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre Completo</label>
+                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre</label>
                                                 <input type="text" class="form-control" id="Nombre_@item.IdUsuario" name="Nombre" value="@item.Nombre" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="ApellidoPaterno_@item.IdUsuario" class="form-label">Apellido Paterno</label>
+                                                <input type="text" class="form-control" id="ApellidoPaterno_@item.IdUsuario" name="ApellidoPaterno" value="@item.ApellidoPaterno" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="ApellidoMaterno_@item.IdUsuario" class="form-label">Apellido Materno</label>
+                                                <input type="text" class="form-control" id="ApellidoMaterno_@item.IdUsuario" name="ApellidoMaterno" value="@item.ApellidoMaterno" />
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -273,6 +284,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Modal para editar contraseña -->
                         <div class="modal fade" id="modalEditarClave_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarClaveLabel_@item.IdUsuario" aria-hidden="true">
@@ -286,15 +298,28 @@
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+
                                             <div class="mb-3">
                                                 <label for="NuevaClave_@item.IdUsuario" class="form-label">Nueva Contraseña</label>
-                                                <input type="password" class="form-control" id="NuevaClave_@item.IdUsuario" name="NuevaClave" required />
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="NuevaClave_@item.IdUsuario" name="NuevaClave" required />
+                                                    <span class="input-group-text toggle-password" data-target="NuevaClave_@item.IdUsuario">
+                                                        <i class="bi bi-eye"></i>
+                                                    </span>
+                                                </div>
                                             </div>
+
                                             <div class="mb-3">
                                                 <label for="ConfirmarClave_@item.IdUsuario" class="form-label">Confirmar Contraseña</label>
-                                                <input type="password" class="form-control" id="ConfirmarClave_@item.IdUsuario" name="ConfirmarClave" required />
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="ConfirmarClave_@item.IdUsuario" name="ConfirmarClave" required />
+                                                    <span class="input-group-text toggle-password" data-target="ConfirmarClave_@item.IdUsuario">
+                                                        <i class="bi bi-eye"></i>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
@@ -303,6 +328,23 @@
                                 </div>
                             </div>
                         </div>
+
+                        <script>
+                            document.querySelectorAll('.toggle-password').forEach(button => {
+                                button.addEventListener('click', function () {
+                                    const targetId = this.getAttribute('data-target');
+                                    const input = document.getElementById(targetId);
+                                    if (input.type === 'password') {
+                                        input.type = 'text';
+                                        this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                                    } else {
+                                        input.type = 'password';
+                                        this.innerHTML = '<i class="bi bi-eye"></i>';
+                                    }
+                                });
+                            });
+                        </script>
+ 
                     }
                 </tbody>
             </table>
@@ -325,15 +367,51 @@
                             </div>
                             <div class="mb-3">
                                 <label for="Clave" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="Clave" name="Clave" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="Clave" name="Clave" required>
+                                    <span class="input-group-text toggle-password" data-target="Clave">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
                             </div>
+
                             <div class="mb-3">
                                 <label for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
-                                <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" required>
+                                    <span class="input-group-text toggle-password" data-target="ConfirmarClave">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <script>
+                                document.querySelectorAll('.toggle-password').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        const targetId = this.getAttribute('data-target');
+                                        const input = document.getElementById(targetId);
+                                        if (input.type === 'password') {
+                                            input.type = 'text';
+                                            this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                                        } else {
+                                            input.type = 'password';
+                                            this.innerHTML = '<i class="bi bi-eye"></i>';
+                                        }
+                                    });
+                                });
+                            </script>
+
+                            <div class="mb-3">
+                                <label for="Nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Nombre" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                                <label for="ApellidoPaterno" class="form-label">Apellido Paterno</label>
+                                <input type="text" class="form-control" id="ApellidoPaterno" name="ApellidoPaterno" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ApellidoMaterno" class="form-label">Apellido Materno</label>
+                                <input type="text" class="form-control" id="ApellidoMaterno" name="ApellidoMaterno">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -344,6 +422,7 @@
                 </div>
             </div>
         </div>
+
     </main>    <!-- End Main Content -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">

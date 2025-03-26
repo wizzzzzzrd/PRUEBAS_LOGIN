@@ -59,6 +59,7 @@ namespace PRUEBAS_LOGIN.Controllers
 
             if (usuario == null)
             {
+ 
                 return RedirectToAction("Login", "Acceso");
             }
 

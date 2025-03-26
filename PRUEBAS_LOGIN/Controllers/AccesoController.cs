@@ -33,32 +33,49 @@ namespace PRUEBAS_LOGIN.Controllers
             bool registrado;
             string mensaje;
 
-            if (oUsuario.Clave == oUsuario.ConfirmarClave)
-            {
-                oUsuario.Clave = ConvertirClaveSha256(oUsuario.Clave); // Cambiado aquí
-            }
-            else
+            // Validar que las contraseñas coincidan
+            if (oUsuario.Clave != oUsuario.ConfirmarClave)
             {
                 ViewData["Mensaje"] = "Las contraseñas no coinciden";
                 return View();
             }
 
-            // Usa la cadena de conexión desde la clase Configuracion
+            // Encriptar la contraseña
+            oUsuario.Clave = ConvertirClaveSha256(oUsuario.Clave);
+
+            // Opcional: asignar valores por defecto a los apellidos en caso de que sean nulos o vacíos
+            if (string.IsNullOrEmpty(oUsuario.ApellidoPaterno))
+                oUsuario.ApellidoPaterno = "";
+            if (string.IsNullOrEmpty(oUsuario.ApellidoMaterno))
+                oUsuario.ApellidoMaterno = "";
+
+            // Si no se define UsuarioCreacion, se puede asignar un valor por defecto (ej. 0)
+            if (oUsuario.UsuarioCreacion <= 0)
+                oUsuario.UsuarioCreacion = 0;
+
             using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
             {
                 SqlCommand cmd = new SqlCommand("sp_RegistrarUsuario", cn);
-                cmd.Parameters.AddWithValue("Correo", oUsuario.Correo);
-                cmd.Parameters.AddWithValue("Clave", oUsuario.Clave);
-                cmd.Parameters.AddWithValue("Nombre", oUsuario.Nombre);
-
-                cmd.Parameters.Add("Registrado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
                 cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Correo", oUsuario.Correo);
+                cmd.Parameters.AddWithValue("@Clave", oUsuario.Clave);
+                cmd.Parameters.AddWithValue("@Nombre", oUsuario.Nombre);
+                cmd.Parameters.AddWithValue("@ApellidoPaterno", oUsuario.ApellidoPaterno);
+                // Si ApellidoMaterno es null, se envía DBNull.Value
+                cmd.Parameters.AddWithValue("@ApellidoMaterno",
+                    string.IsNullOrEmpty(oUsuario.ApellidoMaterno) ? (object)DBNull.Value : oUsuario.ApellidoMaterno);
+                cmd.Parameters.AddWithValue("@UsuarioCreacion", oUsuario.UsuarioCreacion);
+
+                // Parámetros de salida
+                cmd.Parameters.Add(new SqlParameter("@Registrado", SqlDbType.Bit) { Direction = ParameterDirection.Output });
+                cmd.Parameters.Add(new SqlParameter("@Mensaje", SqlDbType.NVarChar, 100) { Direction = ParameterDirection.Output });
 
                 cn.Open();
                 cmd.ExecuteNonQuery();
-                registrado = Convert.ToBoolean(cmd.Parameters["Registrado"].Value);
-                mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                registrado = Convert.ToBoolean(cmd.Parameters["@Registrado"].Value);
+                mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
             }
 
             ViewData["Mensaje"] = mensaje;
@@ -72,7 +89,7 @@ namespace PRUEBAS_LOGIN.Controllers
                 return View();
             }
         }
-
+    
         // Método para iniciar sesión
         [HttpPost]
         [Obsolete]
@@ -98,12 +115,23 @@ namespace PRUEBAS_LOGIN.Controllers
                         {
                             int resultado = reader.GetInt32(0); // IdUsuario
                             string nombre = reader.IsDBNull(1) ? null : reader.GetString(1); // Nombre
+                                                                                             // Se asume que el SP devuelve ApellidoPaterno en la columna 2 y ApellidoMaterno en la columna 3
+                            string apellidoPaterno = reader.IsDBNull(2) ? null : reader.GetString(2);
+                            string apellidoMaterno = reader.IsDBNull(3) ? null : reader.GetString(3);
 
                             if (resultado > 0)
                             {
-                                // Guardar datos en la sesión
-                                HttpContext.Session.SetInt32("userId", resultado); // Guarda solo el ID
-                                HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(new { IdUsuario = resultado, Nombre = nombre }));
+                                // Guardar datos completos en la sesión
+                                HttpContext.Session.SetInt32("userId", resultado);
+                                var usuarioCompleto = new Usuario
+                                {
+                                    IdUsuario = resultado,
+                                    Nombre = nombre,
+                                    ApellidoPaterno = apellidoPaterno,
+                                    ApellidoMaterno = apellidoMaterno,
+                                    Correo = oUsuario.Correo // u otros campos que consideres necesarios
+                                };
+                                HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(usuarioCompleto));
 
                                 // Redirigir correctamente a Home
                                 return RedirectToAction("Index", "Home");
