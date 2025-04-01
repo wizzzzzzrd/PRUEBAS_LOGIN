@@ -361,12 +361,12 @@ else
                                                 <!-- Primera fila: Nombre y Apellido Paterno -->
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
-                                                        <label for="Nombre" class="col-form-label">Nombre</label>
+                                                        <label for="Nombre" class="col-form-label">Nombre*</label>
                                                         @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre" })
                                                         @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="ApellidoPaterno" class="col-form-label">Apellido Paterno</label>
+                                                        <label for="ApellidoPaterno" class="col-form-label">Apellido Paterno*</label>
                                                         @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", id = "ApellidoPaterno" })
                                                         @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger" })
                                                     </div>
@@ -380,7 +380,7 @@ else
                                                         @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger" })
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="Correo" class="col-form-label">Correo Electrónico</label>
+                                                        <label for="Correo" class="col-form-label">Correo Electrónico*</label>
                                                         @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo" })
                                                         @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
                                                     </div>
@@ -403,7 +403,7 @@ else
 
                                                 <div class="row mb-3">
                                                     <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">
-                                                        Nueva Contraseña
+                                                        Nueva Contraseña*
                                                     </label>
                                                     <div class="col-md-8 col-lg-9">
                                                         <div class="input-group">
@@ -418,7 +418,7 @@ else
 
                                                 <div class="row mb-3">
                                                     <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">
-                                                        Confirmar Nueva Contraseña
+                                                        Confirmar Nueva Contraseña*
                                                     </label>
                                                     <div class="col-md-8 col-lg-9">
                                                         <div class="input-group">

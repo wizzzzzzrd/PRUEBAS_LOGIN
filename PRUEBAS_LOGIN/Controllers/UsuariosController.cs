@@ -53,7 +53,11 @@ namespace PRUEBAS_LOGIN.Controllers
                                 Correo = dr["Correo"].ToString(),
                                 Nombre = dr["Nombre"].ToString(),
                                 ApellidoPaterno = dr["ApellidoPaterno"].ToString(),
-                                ApellidoMaterno = dr["ApellidoMaterno"].ToString()
+                                ApellidoMaterno = dr["ApellidoMaterno"].ToString(),
+                                // Si en el modelo Estatus es int:
+                                Estatus = Convert.ToInt32(dr["Estatus"]),
+                                // Si FechaCreacion viene nula se asigna DateTime.MinValue (o puedes manejarlo de otra forma)
+                                FechaCreacion = dr["FechaCreacion"] != DBNull.Value ? Convert.ToDateTime(dr["FechaCreacion"]) : DateTime.MinValue
                             });
                         }
                     }

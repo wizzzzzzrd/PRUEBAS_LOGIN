@@ -211,9 +211,10 @@
                     <tr>
                         <th>Id</th>
                         <th>E-mail</th>
-                        <th>Contraseña</th>
                         <th>Nombre Completo</th>
-                        <th>Acciones</th>
+                        <th>Estatus</th>
+                        <th>Fecha Creación</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -222,31 +223,91 @@
                         <tr>
                             <td>@item.IdUsuario</td>
                             <td>@item.Correo</td>
-                            <td>********</td>
                             <td>@($"{item.Nombre} {item.ApellidoPaterno} {item.ApellidoMaterno}".Trim())</td>
                             <td>
-                                <!-- Botón para editar datos (correo y nombre) -->
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarDatos_@item.IdUsuario">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <!-- Botón para editar contraseña -->
-                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarClave_@item.IdUsuario">
-                                    <i class="bi bi-key"></i>
-                                </button>
-                                <!-- Botón para eliminar (se muestra solo si el IdUsuario es distinto de 6) -->
-                                @if (item.IdUsuario != 6)
+                                @if (item.Estatus == 1)
                                 {
-                                    <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactivo</span>
                                 }
                             </td>
+                            <td>@item.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="dropdown">
+                                    <!-- Botón de tres puntos -->
+                                    <button class="btn btn-sm border-0 bg-transparent text-dark" type="button" id="igDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <!-- Menú desplegable estilo IG -->
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="igDropdownMenuButton" style="min-width: 150px;">
+                                        <li>
+                                            <button class="dropdown-item d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalEditarDatos_@item.IdUsuario">
+                                                <span class="me-2 rounded-circle bg-warning d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
+                                                    <i class="bi bi-pencil text-white mx-auto"></i>
+                                                </span>
+                                                <span>Editar Datos Personales</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalEditarClave_@item.IdUsuario">
+                                                <span class="me-2 rounded-circle bg-info d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
+                                                    <i class="bi bi-key text-white mx-auto"></i>
+                                                </span>
+                                                <span>Cambiar Contraseña</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalCambiarEstatus_@item.IdUsuario">
+                                                <span class="me-2 rounded-circle bg-secondary d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
+                                                    <i class="bi bi-toggle-on text-white mx-auto"></i>
+                                                </span>
+                                                <span>Cambiar Estatus</span>
+                                            </button>
+                                        </li>
+                                        @if (item.IdUsuario != 6)
+                                        {
+                                            <li>
+                                                <!-- Se abre el modal de confirmación de eliminación -->
+                                                <button class="dropdown-item d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalEliminar_@item.IdUsuario">
+                                                    <span class="me-2 rounded-circle bg-danger d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
+                                                        <i class="bi bi-trash text-white mx-auto"></i>
+                                                    </span>
+                                                    <span>Eliminar Usuario</span>
+                                                </button>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
-
+                        @if (item.IdUsuario != 6)
+                        {
+                            <!-- Modal de confirmación de eliminación -->
+                            <div class="modal fade" id="modalEliminar_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEliminarLabel_@item.IdUsuario" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel_@item.IdUsuario">Confirmar eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas eliminar este usuario?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form action="@Url.Action("Eliminar", "Usuarios")" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <!-- Modal para editar datos (correo, nombre y apellidos) -->
                         <div class="modal fade" id="modalEditarDatos_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarDatosLabel_@item.IdUsuario" aria-hidden="true">
                             <div class="modal-dialog">
@@ -260,15 +321,15 @@
                                         <div class="modal-body">
                                             <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
                                             <div class="mb-3">
-                                                <label for="Correo_@item.IdUsuario" class="form-label">E-mail</label>
+                                                <label for="Correo_@item.IdUsuario" class="form-label">E-mail*</label>
                                                 <input type="email" class="form-control" id="Correo_@item.IdUsuario" name="Correo" value="@item.Correo" required />
                                             </div>
                                             <div class="mb-3">
-                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre</label>
+                                                <label for="Nombre_@item.IdUsuario" class="form-label">Nombre*</label>
                                                 <input type="text" class="form-control" id="Nombre_@item.IdUsuario" name="Nombre" value="@item.Nombre" required />
                                             </div>
                                             <div class="mb-3">
-                                                <label for="ApellidoPaterno_@item.IdUsuario" class="form-label">Apellido Paterno</label>
+                                                <label for="ApellidoPaterno_@item.IdUsuario" class="form-label">Apellido Paterno*</label>
                                                 <input type="text" class="form-control" id="ApellidoPaterno_@item.IdUsuario" name="ApellidoPaterno" value="@item.ApellidoPaterno" required />
                                             </div>
                                             <div class="mb-3">
@@ -285,7 +346,6 @@
                             </div>
                         </div>
 
-
                         <!-- Modal para editar contraseña -->
                         <div class="modal fade" id="modalEditarClave_@item.IdUsuario" tabindex="-1" aria-labelledby="modalEditarClaveLabel_@item.IdUsuario" aria-hidden="true">
                             <div class="modal-dialog">
@@ -298,9 +358,8 @@
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
-
                                             <div class="mb-3">
-                                                <label for="NuevaClave_@item.IdUsuario" class="form-label">Nueva Contraseña</label>
+                                                <label for="NuevaClave_@item.IdUsuario" class="form-label">Nueva Contraseña*</label>
                                                 <div class="input-group">
                                                     <input type="password" class="form-control" id="NuevaClave_@item.IdUsuario" name="NuevaClave" required />
                                                     <span class="input-group-text toggle-password" data-target="NuevaClave_@item.IdUsuario">
@@ -308,9 +367,8 @@
                                                     </span>
                                                 </div>
                                             </div>
-
                                             <div class="mb-3">
-                                                <label for="ConfirmarClave_@item.IdUsuario" class="form-label">Confirmar Contraseña</label>
+                                                <label for="ConfirmarClave_@item.IdUsuario" class="form-label">Confirmar Contraseña*</label>
                                                 <div class="input-group">
                                                     <input type="password" class="form-control" id="ConfirmarClave_@item.IdUsuario" name="ConfirmarClave" required />
                                                     <span class="input-group-text toggle-password" data-target="ConfirmarClave_@item.IdUsuario">
@@ -319,7 +377,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
@@ -329,25 +386,48 @@
                             </div>
                         </div>
 
-                        <script>
-                            document.querySelectorAll('.toggle-password').forEach(button => {
-                                button.addEventListener('click', function () {
-                                    const targetId = this.getAttribute('data-target');
-                                    const input = document.getElementById(targetId);
-                                    if (input.type === 'password') {
-                                        input.type = 'text';
-                                        this.innerHTML = '<i class="bi bi-eye-slash"></i>';
-                                    } else {
-                                        input.type = 'password';
-                                        this.innerHTML = '<i class="bi bi-eye"></i>';
-                                    }
-                                });
-                            });
-                        </script>
- 
+                        <!-- Modal para cambiar estatus -->
+                        <div class="modal fade" id="modalCambiarEstatus_@item.IdUsuario" tabindex="-1" aria-labelledby="modalCambiarEstatusLabel_@item.IdUsuario" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="@Url.Action("CambiarEstatus", "Usuarios")" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalCambiarEstatusLabel_@item.IdUsuario">Cambiar Estatus</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="IdUsuario" value="@item.IdUsuario" />
+                                            <p>¿Desea cambiar el estatus de este usuario?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Cambiar Estatus</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </tbody>
             </table>
+
+            <script>
+                document.querySelectorAll('.toggle-password').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const targetId = this.getAttribute('data-target');
+                        const input = document.getElementById(targetId);
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                        } else {
+                            input.type = 'password';
+                            this.innerHTML = '<i class="bi bi-eye"></i>';
+                        }
+                    });
+                });
+            </script>
+
         </div>
 
         <!-- Modal para agregar Nuevo Usuario -->
@@ -362,11 +442,11 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="Correo" class="form-label">E-mail</label>
+                                <label for="Correo" class="form-label">E-mail*</label>
                                 <input type="email" class="form-control" id="Correo" name="Correo" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Clave" class="form-label">Contraseña</label>
+                                <label for="Clave" class="form-label">Contraseña*</label>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="Clave" name="Clave" required>
                                     <span class="input-group-text toggle-password" data-target="Clave">
@@ -376,7 +456,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
+                                <label for="ConfirmarClave" class="form-label">Confirmar Contraseña*</label>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" required>
                                     <span class="input-group-text toggle-password" data-target="ConfirmarClave">
@@ -402,11 +482,11 @@
                             </script>
 
                             <div class="mb-3">
-                                <label for="Nombre" class="form-label">Nombre</label>
+                                <label for="Nombre" class="form-label">Nombre*</label>
                                 <input type="text" class="form-control" id="Nombre" name="Nombre" required>
                             </div>
                             <div class="mb-3">
-                                <label for="ApellidoPaterno" class="form-label">Apellido Paterno</label>
+                                <label for="ApellidoPaterno" class="form-label">Apellido Paterno*</label>
                                 <input type="text" class="form-control" id="ApellidoPaterno" name="ApellidoPaterno" required>
                             </div>
                             <div class="mb-3">
