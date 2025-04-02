@@ -72,7 +72,7 @@ namespace PRUEBAS_LOGIN.Controllers
                         }
                     }
 
-                    // Consulta UsoCFDI (no modificado)
+                    // Consulta UsoCFDI
                     string queryUsoCFDI = "SELECT IdUsoCFDI, ClaveUsoCFDI, Descripcion FROM dbo.UsoCFDI";
                     using (SqlCommand cmd = new SqlCommand(queryUsoCFDI, cn))
                     {
@@ -92,7 +92,7 @@ namespace PRUEBAS_LOGIN.Controllers
                         }
                     }
 
-                    // Consulta RegimenFiscal (igual que en tu ejemplo)
+                    // Consulta RegimenFiscal
                     string queryRegimenFiscal = "SELECT ClaveRegimenFiscal, Descripcion, TipoPersona FROM dbo.RegimenFiscal";
                     using (SqlCommand cmd = new SqlCommand(queryRegimenFiscal, cn))
                     {
@@ -276,6 +276,48 @@ namespace PRUEBAS_LOGIN.Controllers
             }
             ViewBag.NombreUsuario = usuario.Nombre;
             return View();
+        }
+
+        // Método para buscar ventas (tickets) por IdVenta (número de ticket)
+        [HttpGet]
+        public IActionResult BuscarVentas(int ticket)
+        {
+            var ventas = new List<VentaDTO>();
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
+                {
+                    cn.Open();
+                    // Llamamos al procedimiento almacenado sp_BuscarVenta
+                    using (SqlCommand cmd = new SqlCommand("sp_BuscarVenta", cn))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@ticket", ticket);
+
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                ventas.Add(new VentaDTO
+                                {
+                                    IdVenta = Convert.ToInt32(dr["IdVenta"]),
+                                    Subtotal = Convert.ToDecimal(dr["Subtotal"]),
+                                    ImporteDescuento = Convert.ToDecimal(dr["ImporteDescuento"]),
+                                    ImporteIEPS = Convert.ToDecimal(dr["ImporteIEPS"]),
+                                    ImporteIVA = Convert.ToDecimal(dr["ImporteIVA"]),
+                                    TotalVenta = Convert.ToDecimal(dr["TotalVenta"]),
+                                    TipoPago = dr["TipoPago"].ToString()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            return Json(ventas);
         }
 
         // POST: Facturacion/ActualizarFiscal (actualizar datos fiscales existentes)

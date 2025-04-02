@@ -809,7 +809,7 @@
                                                                 {
                                                                     foreach (var mp in ViewBag.MetodosPago)
                                                                     {
-                                                                        <option value="@mp.IdMetodo">
+                                                                        <option value="@mp.IdMetodo" data-clave="@mp.Clave">
                                                                             @($"{mp.Clave} - {mp.Descripcion}")
                                                                         </option>
                                                                     }
@@ -844,63 +844,66 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <script>
+                                                    document.getElementById('metodoPago').addEventListener('change', function() {
+                                                        let selectedOption = this.options[this.selectedIndex];
+                                                        let clave = selectedOption.getAttribute('data-clave');
+                                                        let condicionesPago = document.getElementById('condicionesPago');
+
+                                                        if (clave === 'PUE') {
+                                                            condicionesPago.value = 'Contado';
+                                                        } else if (clave === 'PPD') {
+                                                            condicionesPago.value = 'Credito';
+                                                        } else {
+                                                            condicionesPago.value = '';
+                                                        }
+                                                    });
+                                                </script>
+
                                             </div>
-                                            <!-- Facturas Pendientes -->
+                                            <!-- Ventas a Facturar -->
                                             <div class="card mb-4">
                                                 <div class="card-header bg-warning">
                                                     <h5 class="mb-0">Facturas Pendientes</h5>
+
                                                 </div>
                                                 <br />
                                                 <div class="card-body">
+                                                    <!-- Buscador por Ticket (IdVenta) -->
+                                                    <div class="mb-3">
+                                                        <label for="buscarTicket" class="form-label">Buscar por Número de Ticket</label>
+                                                        <input type="text" class="form-control" id="buscarTicket" placeholder="Ingrese el número de ticket">
+                                                    </div>
+                                                    <div class="text-end mb-3">
+                                                        <button type="button" id="buscarVentasBtn" class="btn btn-secondary">Buscar Ventas</button>
+                                                    </div>
+                                                    <!-- Tabla de catálogo de ventas -->
                                                     <div class="table-responsive">
-                                                        <table class="table table-striped" id="pendingTable">
+                                                        <table class="table table-striped" id="ventasTable">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Selección</th>
-                                                                    <th>Ticket</th>
-                                                                    <th>Total</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><input type="checkbox" class="form-check-input"></td>
-                                                                    <td>Ticket 001</td>
-                                                                    <td>$100.00</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><input type="checkbox" class="form-check-input"></td>
-                                                                    <td>Ticket 002</td>
-                                                                    <td>$200.00</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="text-end mb-3">
-                                                        <button type="button" id="addTicketsBtn" class="btn btn-primary">Agregar a Tickets</button>
-                                                    </div>
-                                                    <h6>Items Seleccionados</h6>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered" id="ticketsTable">
-                                                            <thead>
-                                                                <tr>
                                                                     <th>Ticket</th>
                                                                     <th>Subtotal</th>
                                                                     <th>Descuento</th>
                                                                     <th>IEPS</th>
                                                                     <th>IVA</th>
-                                                                    <th>Impuestos</th>
                                                                     <th>Total Venta</th>
                                                                     <th>Tipo de Pago</th>
                                                                     <th>Acciones</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <!-- Aquí se agregarán dinámicamente las filas -->
+                                                                <!-- Se llenarán dinámicamente las filas -->
                                                             </tbody>
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                     
+
                                         </div>
                                         <!-- Botón para facturar -->
                                         <div class="text-center">
