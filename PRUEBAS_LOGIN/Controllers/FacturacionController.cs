@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using PRUEBAS_LOGIN.Models;
 using PRUEBAS_LOGIN.Permisos;
@@ -18,7 +17,7 @@ namespace PRUEBAS_LOGIN.Controllers
         [Obsolete]
         public IActionResult Fiscales()
         {
-            // Verifica que exista la sesión
+            // Verifica la sesión
             var usuarioJson = HttpContext.Session.GetString("usuario");
             if (string.IsNullOrEmpty(usuarioJson))
             {
@@ -30,20 +29,21 @@ namespace PRUEBAS_LOGIN.Controllers
                 return RedirectToAction("Login", "Acceso");
             }
             ViewBag.NombreUsuario = usuario.Nombre;
-            // Asigna también el IdUsuario para la validación en la vista
             ViewBag.IdUsuario = usuario.IdUsuario;
 
-            // Inicializa el modelo
+            // Inicializa el modelo de Datos Fiscales
             Fiscales model = null;
             try
             {
                 using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
                 {
+                    cn.Open();
+
+                    // Consulta DatosFiscales
                     string queryFiscales = "SELECT * FROM dbo.DatosFiscales WHERE IdUsuario = @IdUsuario";
                     using (SqlCommand cmd = new SqlCommand(queryFiscales, cn))
                     {
                         cmd.Parameters.AddWithValue("@IdUsuario", usuario.IdUsuario);
-                        cn.Open();
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
                             if (dr.Read())
@@ -72,7 +72,7 @@ namespace PRUEBAS_LOGIN.Controllers
                         }
                     }
 
-                    // Consulta UsoCFDI
+                    // Consulta UsoCFDI (no modificado)
                     string queryUsoCFDI = "SELECT IdUsoCFDI, ClaveUsoCFDI, Descripcion FROM dbo.UsoCFDI";
                     using (SqlCommand cmd = new SqlCommand(queryUsoCFDI, cn))
                     {
@@ -92,7 +92,7 @@ namespace PRUEBAS_LOGIN.Controllers
                         }
                     }
 
-                    // Consulta RegimenFiscal
+                    // Consulta RegimenFiscal (igual que en tu ejemplo)
                     string queryRegimenFiscal = "SELECT ClaveRegimenFiscal, Descripcion, TipoPersona FROM dbo.RegimenFiscal";
                     using (SqlCommand cmd = new SqlCommand(queryRegimenFiscal, cn))
                     {
@@ -111,6 +111,46 @@ namespace PRUEBAS_LOGIN.Controllers
                             ViewBag.RegimenesFiscales = regimenesFiscales;
                         }
                     }
+
+                    // Consulta de Métodos de Pago
+                    string queryMetodosPago = "SELECT IdMetodo, Clave, Descripcion FROM MetodosPago WHERE Activo = 1";
+                    using (SqlCommand cmd = new SqlCommand(queryMetodosPago, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            var metodosPago = new List<MetodoPago>();
+                            while (dr.Read())
+                            {
+                                metodosPago.Add(new MetodoPago
+                                {
+                                    IdMetodo = Convert.ToInt32(dr["IdMetodo"]),
+                                    Clave = dr["Clave"].ToString(),
+                                    Descripcion = dr["Descripcion"].ToString()
+                                });
+                            }
+                            ViewBag.MetodosPago = metodosPago;
+                        }
+                    }
+
+                    // Consulta de Formas de Pago
+                    string queryFormasPago = "SELECT IdTipoPago, ClavePago, TipoPago FROM tbc_FW_TipoCobro";
+                    using (SqlCommand cmd = new SqlCommand(queryFormasPago, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            var formasPago = new List<FormaPago>();
+                            while (dr.Read())
+                            {
+                                formasPago.Add(new FormaPago
+                                {
+                                    IdTipoPago = Convert.ToInt32(dr["IdTipoPago"]),
+                                    ClavePago = dr["ClavePago"].ToString(),
+                                    TipoPago = dr["TipoPago"].ToString()
+                                });
+                            }
+                            ViewBag.FormasPago = formasPago;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -121,13 +161,13 @@ namespace PRUEBAS_LOGIN.Controllers
 
             ViewBag.HasFiscalData = (model != null);
             return View(model);
-        }   
+        }
 
+        // POST: Facturacion/Fiscales (actualización de datos fiscales)
         [HttpPost]
         [Obsolete]
         public IActionResult Fiscales(Fiscales model)
         {
-            // Recupera el IdUsuario de la sesión para vincular la información fiscal al usuario correspondiente
             int? userId = HttpContext.Session.GetInt32("userId");
             if (!userId.HasValue)
             {
@@ -136,50 +176,30 @@ namespace PRUEBAS_LOGIN.Controllers
                 return RedirectToAction("Login", "Acceso");
             }
             model.IdUsuario = userId.Value;
+            model.FechaModificacion = DateTime.Now;
 
-            // Mapeo de campos con nombres diferentes en el formulario
             if (Request.Form.ContainsKey("municipio"))
-            {
                 model.DelMunicipio = Request.Form["municipio"];
-            }
             if (Request.Form.ContainsKey("codigoPostal"))
-            {
                 model.CodigoPostal = Request.Form["codigoPostal"];
-            }
             if (Request.Form.ContainsKey("colonia"))
-            {
                 model.Colonia = Request.Form["colonia"];
-            }
             if (Request.Form.ContainsKey("ciudad"))
-            {
                 model.Ciudad = Request.Form["ciudad"];
-            }
             if (Request.Form.ContainsKey("estado"))
-            {
                 model.Estado = Request.Form["estado"];
-            }
             if (Request.Form.ContainsKey("pais"))
-            {
                 model.Pais = Request.Form["pais"];
-            }
             if (Request.Form.ContainsKey("rfc"))
-            {
                 model.RFC = Request.Form["rfc"];
-            }
             if (Request.Form.ContainsKey("razonSocial"))
-            {
                 model.RazonSocial = Request.Form["razonSocial"];
-            }
             if (Request.Form.ContainsKey("usoCFDI"))
-            {
                 model.CFDI = Request.Form["usoCFDI"];
-            }
-         
-            // Asignar las fechas actuales
+
             model.FechaCreacion = DateTime.Now;
             model.FechaModificacion = DateTime.Now;
 
-            // Validación básica: el campo Calle es obligatorio
             if (string.IsNullOrWhiteSpace(model.Calle))
             {
                 TempData["TipoMensaje"] = "danger";
@@ -192,7 +212,7 @@ namespace PRUEBAS_LOGIN.Controllers
                 using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
                 {
                     SqlCommand cmd = new SqlCommand("sp_RegistrarFiscal", cn);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@IdUsuario", model.IdUsuario);
                     cmd.Parameters.AddWithValue("@Calle", model.Calle);
@@ -207,20 +227,19 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@TipoPersona", model.TipoPersona);
                     cmd.Parameters.AddWithValue("@RFC", model.RFC);
                     cmd.Parameters.AddWithValue("@RazonSocial", model.RazonSocial);
-                    cmd.Parameters.AddWithValue("@CFDI", model.CFDI); // Asegúrate de incluir este parámetro
+                    cmd.Parameters.AddWithValue("@CFDI", model.CFDI);
                     cmd.Parameters.AddWithValue("@FechaCreacion", model.FechaCreacion);
                     cmd.Parameters.AddWithValue("@FechaModificacion", model.FechaModificacion);
 
-                    // Parámetros de salida para conocer el resultado del registro
-                    SqlParameter registradoParam = new SqlParameter("@Registrado", SqlDbType.Bit)
+                    SqlParameter registradoParam = new SqlParameter("@Registrado", System.Data.SqlDbType.Bit)
                     {
-                        Direction = ParameterDirection.Output
+                        Direction = System.Data.ParameterDirection.Output
                     };
                     cmd.Parameters.Add(registradoParam);
 
-                    SqlParameter mensajeParam = new SqlParameter("@Mensaje", SqlDbType.VarChar, 100)
+                    SqlParameter mensajeParam = new SqlParameter("@Mensaje", System.Data.SqlDbType.VarChar, 100)
                     {
-                        Direction = ParameterDirection.Output
+                        Direction = System.Data.ParameterDirection.Output
                     };
                     cmd.Parameters.Add(mensajeParam);
 
@@ -236,45 +255,34 @@ namespace PRUEBAS_LOGIN.Controllers
             }
             catch (Exception ex)
             {
-                // Información detallada para depuración
                 TempData["TipoMensaje"] = "danger";
                 TempData["Mensaje"] = "Error al registrar: " + ex.Message;
                 TempData["Debug"] = "StackTrace: " + ex.StackTrace;
             }
             return RedirectToAction("Fiscales");
         }
+
         public IActionResult Facturas()
         {
-            // Obtener el usuario de la sesión
             var usuarioJson = HttpContext.Session.GetString("usuario");
-
             if (string.IsNullOrEmpty(usuarioJson))
             {
                 return RedirectToAction("Login", "Acceso");
             }
-
             var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
-
             if (usuario == null)
             {
                 return RedirectToAction("Login", "Acceso");
             }
-
-            // Asignar el nombre de usuario al ViewBag
             ViewBag.NombreUsuario = usuario.Nombre;
-
-            // Si en el futuro deseas pasar también la lista de facturas a la vista,
-            // aquí puedes cargar los datos de facturación (por ejemplo, dummy o reales).
             return View();
         }
 
-
-        // POST: Facturacion/ActualizarFiscal (para actualizar datos fiscales existentes)
+        // POST: Facturacion/ActualizarFiscal (actualizar datos fiscales existentes)
         [HttpPost]
         [Obsolete]
         public IActionResult ActualizarFiscal(Fiscales model)
         {
-            // Verifica la sesión
             int? userId = HttpContext.Session.GetInt32("userId");
             if (!userId.HasValue)
             {
@@ -285,11 +293,8 @@ namespace PRUEBAS_LOGIN.Controllers
             model.IdUsuario = userId.Value;
             model.FechaModificacion = DateTime.Now;
 
-            // Asigna el valor de CFDI desde el formulario
             if (Request.Form.ContainsKey("usoCFDI"))
-            {
                 model.CFDI = Request.Form["usoCFDI"];
-            }
             else
             {
                 TempData["TipoMensaje"] = "danger";
@@ -302,9 +307,8 @@ namespace PRUEBAS_LOGIN.Controllers
                 using (SqlConnection cn = new SqlConnection(Configuracion.cadena))
                 {
                     SqlCommand cmd = new SqlCommand("sp_ActualizarFiscal", cn);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    // Parámetros del procedimiento almacenado
                     cmd.Parameters.AddWithValue("@IdFiscal", model.IdFiscal);
                     cmd.Parameters.AddWithValue("@IdUsuario", model.IdUsuario);
                     cmd.Parameters.AddWithValue("@Calle", model.Calle);
@@ -319,19 +323,18 @@ namespace PRUEBAS_LOGIN.Controllers
                     cmd.Parameters.AddWithValue("@TipoPersona", model.TipoPersona);
                     cmd.Parameters.AddWithValue("@RFC", model.RFC);
                     cmd.Parameters.AddWithValue("@RazonSocial", model.RazonSocial);
-                    cmd.Parameters.AddWithValue("@CFDI", model.CFDI); // Asegúrate de incluir este parámetro
+                    cmd.Parameters.AddWithValue("@CFDI", model.CFDI);
                     cmd.Parameters.AddWithValue("@FechaModificacion", model.FechaModificacion);
 
-                    // Parámetros de salida
-                    SqlParameter actualizadoParam = new SqlParameter("@Actualizado", SqlDbType.Bit)
+                    SqlParameter actualizadoParam = new SqlParameter("@Actualizado", System.Data.SqlDbType.Bit)
                     {
-                        Direction = ParameterDirection.Output
+                        Direction = System.Data.ParameterDirection.Output
                     };
                     cmd.Parameters.Add(actualizadoParam);
 
-                    SqlParameter mensajeParam = new SqlParameter("@Mensaje", SqlDbType.VarChar, 100)
+                    SqlParameter mensajeParam = new SqlParameter("@Mensaje", System.Data.SqlDbType.VarChar, 100)
                     {
-                        Direction = ParameterDirection.Output
+                        Direction = System.Data.ParameterDirection.Output
                     };
                     cmd.Parameters.Add(mensajeParam);
 

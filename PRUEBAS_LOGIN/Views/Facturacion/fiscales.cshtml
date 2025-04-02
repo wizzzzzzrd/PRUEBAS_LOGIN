@@ -657,8 +657,8 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
-                                                        <label for="emisorReceptor" class="form-label">Receptor</label>
-                                                        <input type="text" class="form-control" id="emisorReceptor" name="EmisorReceptor" placeholder="Receptor">
+                                                        <label for="emisorRFC" class="form-label">RFC</label>
+                                                        <input type="text" class="form-control" id="emisorRFC" name="EmisorRFC" placeholder="RFC">
                                                     </div>
                                                     <div class="col-md-4 mb-3">
                                                         <label for="emisorNombre" class="form-label">Nombre/Razón Social</label>
@@ -803,15 +803,38 @@
                                                     <div class="row">
                                                         <div class="col-md-4 mb-3">
                                                             <label for="metodoPago" class="form-label">Método de Pago</label>
-                                                            <input type="text" class="form-control" id="metodoPago" name="MetodoPago" placeholder="Método de Pago">
+                                                            <select name="MetodoPago" class="form-select" id="metodoPago" required>
+                                                                <option value="">Seleccione una opción</option>
+                                                                @if (ViewBag.MetodosPago != null)
+                                                                {
+                                                                    foreach (var mp in ViewBag.MetodosPago)
+                                                                    {
+                                                                        <option value="@mp.IdMetodo">
+                                                                            @($"{mp.Clave} - {mp.Descripcion}")
+                                                                        </option>
+                                                                    }
+                                                                }
+                                                            </select>
                                                         </div>
+
                                                         <div class="col-md-4 mb-3">
                                                             <label for="condicionesPago" class="form-label">Condiciones de Pago</label>
                                                             <input type="text" class="form-control" id="condicionesPago" name="CondicionesPago" placeholder="Condiciones de Pago">
                                                         </div>
                                                         <div class="col-md-4 mb-3">
                                                             <label for="formaPago" class="form-label">Forma de Pago</label>
-                                                            <input type="text" class="form-control" id="formaPago" name="FormaPago" placeholder="Forma de Pago">
+                                                            <select name="FormaPago" class="form-select" id="formaPago" required>
+                                                                <option value="">Seleccione una opción</option>
+                                                                @if (ViewBag.FormasPago != null)
+                                                                {
+                                                                    foreach (var fp in ViewBag.FormasPago)
+                                                                    {
+                                                                        <option value="@fp.IdTipoPago">
+                                                                            @($"{fp.ClavePago} - {fp.TipoPago}")
+                                                                        </option>
+                                                                    }
+                                                                }
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="row">
