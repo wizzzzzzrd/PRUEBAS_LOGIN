@@ -865,25 +865,25 @@
                                             <!-- Ventas a Facturar -->
                                             <div class="card mb-4">
                                                 <div class="card-header bg-warning">
-                                                    <h5 class="mb-0">Facturas Pendientes</h5>
-
+                                                    <h5 class="mb-0">Tickets a Facturar</h5>
                                                 </div>
                                                 <br />
                                                 <div class="card-body">
-                                                    <!-- Buscador por Ticket (IdVenta) -->
+                                                    <!-- Formulario para agregar Ticket -->
                                                     <div class="mb-3">
-                                                        <label for="buscarTicket" class="form-label">Buscar por Número de Ticket</label>
-                                                        <input type="text" class="form-control" id="buscarTicket" placeholder="Ingrese el número de ticket">
+                                                        <label for="ticketInput" class="form-label">Número de Ticket</label>
+                                                        <input type="text" class="form-control" id="ticketInput" placeholder="Ingrese el número de ticket">
                                                     </div>
                                                     <div class="text-end mb-3">
-                                                        <button type="button" id="buscarVentasBtn" class="btn btn-secondary">Buscar Ventas</button>
+                                                        <button type="button" id="agregarTicketBtn" class="btn btn-success">
+                                                            <i class="bi bi-plus-circle"></i> Agregar
+                                                        </button>
                                                     </div>
-                                                    <!-- Tabla de catálogo de ventas -->
+                                                    <!-- Tabla de tickets a facturar -->
                                                     <div class="table-responsive">
-                                                        <table class="table table-striped" id="ventasTable">
+                                                        <table class="table table-striped" id="ticketsTable">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>Selección</th>
                                                                     <th>Ticket</th>
                                                                     <th>Subtotal</th>
                                                                     <th>Descuento</th>
@@ -895,14 +895,13 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <!-- Se llenarán dinámicamente las filas -->
+                                                                <!-- Se agregarán las filas dinámicamente -->
                                                             </tbody>
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                     
+                                  
 
                                         </div>
                                         <!-- Botón para facturar -->

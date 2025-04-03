@@ -1,6 +1,6 @@
 ﻿namespace PRUEBAS_LOGIN.Models
 {
-    public class VentaDTO
+        public class VentaDTO
     {
         public int IdVenta { get; set; }
         public decimal Subtotal { get; set; }
