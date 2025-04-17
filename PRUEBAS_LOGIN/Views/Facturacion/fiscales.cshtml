@@ -655,34 +655,31 @@
                                             </div>
                                             <br />
                                             <div class="card-body">
+                                                <!-- Primera fila: RFC y Nombre/Razón Social -->
                                                 <div class="row">
-                                                    <div class="col-md-4 mb-3">
+                                                    <div class="col-md-6 mb-3">
                                                         <label for="emisorRFC" class="form-label">RFC</label>
-                                                        <input type="text" class="form-control" id="emisorRFC" name="EmisorRFC" placeholder="RFC">
+                                                        <input type="text" class="form-control" id="emisorRFC" name="EmisorRFC" placeholder="RFC"
+                                                               value="@ViewBag.Emisor?.RFC" readonly>
                                                     </div>
-                                                    <div class="col-md-4 mb-3">
+                                                    <div class="col-md-6 mb-3">
                                                         <label for="emisorNombre" class="form-label">Nombre/Razón Social</label>
-                                                        <input type="text" class="form-control" id="emisorNombre" name="EmisorNombre" placeholder="Nombre o Razón Social">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="emisorCP" class="form-label">C.P</label>
-                                                        <input type="text" class="form-control" id="emisorCP" name="EmisorCP" placeholder="Código Postal">
+                                                        <input type="text" class="form-control" id="emisorNombre" name="EmisorNombre" placeholder="Nombre o Razón Social"
+                                                               value="@ViewBag.Emisor?.NombreRazonSocial" readonly>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label for="tipoPersona" class="form-label">Regimen Fiscal *</label>
-                                                    <select name="TipoPersona" class="form-select" id="tipoPersona" required>
-                                                        <option value="">Seleccione una opción</option>
-                                                        @* @if (ViewBag.RegimenesFiscales != null)
-                                                    {
-                                                        foreach (var regimen in ViewBag.RegimenesFiscales)
-                                                        {
-                                                            <option value="@regimen.TipoPersona" selected="@(Model != null && Model.TipoPersona == regimen.TipoPersona ? "selected" : null)">
-                                                                @($"{regimen.ClaveRegimenFiscal} - {regimen.Descripcion} ({regimen.TipoPersona})")
-                                                            </option>
-                                                        }
-                                                    }*@
-                                                    </select>
+                                                <!-- Segunda fila: Código Postal y Régimen Fiscal -->
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="emisorCP" class="form-label">C.P</label>
+                                                        <input type="text" class="form-control" id="emisorCP" name="EmisorCP" placeholder="Código Postal"
+                                                               value="@(ViewBag.Emisor?.CodigoPostal != null ? ViewBag.Emisor.CodigoPostal.ToString() : String.Empty)" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="regimenFiscal" class="form-label">Régimen Fiscal</label>
+                                                        <input type="text" class="form-control" id="regimenFiscal" name="RegimenFiscal" placeholder="Régimen Fiscal"
+                                                               value="@ViewBag.Emisor?.RegimenFiscal" readonly>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -867,9 +864,9 @@
                                                 <div class="card-header bg-warning">
                                                     <h5 class="mb-0">Tickets a Facturar</h5>
                                                 </div>
-                                                <br />
-                                                <div class="card-body">
+                                                <div class="card-body"> 
                                                     <!-- Formulario para agregar Ticket -->
+                                                    <br />
                                                     <div class="mb-3">
                                                         <label for="ticketInput" class="form-label">Número de Ticket</label>
                                                         <input type="text" class="form-control" id="ticketInput" placeholder="Ingrese el número de ticket">
@@ -900,9 +897,25 @@
                                                         </table>
                                                     </div>
                                                 </div>
+                                                <!-- Footer con la sección de Totales -->
+                                                <div class="card-footer bg-transparent">                                           
+                                                    <div class="d-flex justify-content-end">
+                                                        <div class="card" style="width: 300px;">
+                                                            <br />
+                                                            <div class="card-body">
+                                                                <p class="mb-1">Subtotal s/Desc: <span id="subtotalSinDesc">0.00</span></p>
+                                                                <p class="mb-1">- Descuento: <span id="descuentoTotal">0.00</span></p>
+                                                                <hr>
+                                                                <p class="mb-1">Subtotal c/Desc: <span id="subtotalConDesc">0.00</span></p>
+                                                                <p class="mb-1">+ IVA: <span id="ivaTotal">0.00</span></p>
+                                                                <p class="mb-1">+ IEPS: <span id="iepsTotal">0.00</span></p>
+                                                                <hr>
+                                                                <h6>Total c/Desc: <span id="totalConDesc">0.00</span></h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                  
-
                                         </div>
                                         <!-- Botón para facturar -->
                                         <div class="text-center">

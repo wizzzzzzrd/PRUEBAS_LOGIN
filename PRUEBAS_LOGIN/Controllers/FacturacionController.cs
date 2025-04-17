@@ -151,6 +151,29 @@ namespace PRUEBAS_LOGIN.Controllers
                             ViewBag.FormasPago = formasPago;
                         }
                     }
+
+                    // Consulta de EmisorFactura
+                    // Se asume que se recuperará el primer registro. Si existen múltiples registros, se debe ajustar la lógica
+                    string queryEmisor = "SELECT TOP 1 * FROM dbo.EmisorFactura";
+                    using (SqlCommand cmd = new SqlCommand(queryEmisor, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                // Se recuperan los datos necesarios para el formulario, incluyendo RegimenFiscal
+                                EmisorFactura emisor = new EmisorFactura
+                                {
+                                    EmisorFacturaId = Convert.ToInt32(dr["EmisorFacturaId"]),
+                                    NombreRazonSocial = dr["NombreRazonSocial"].ToString(),
+                                    RFC = dr["RFC"].ToString(),
+                                    CodigoPostal = dr["CodigoPostal"] != DBNull.Value ? Convert.ToInt32(dr["CodigoPostal"]) : (int?)null,
+                                    RegimenFiscal = dr["RegimenFiscal"].ToString()
+                                };
+                                ViewBag.Emisor = emisor;
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)

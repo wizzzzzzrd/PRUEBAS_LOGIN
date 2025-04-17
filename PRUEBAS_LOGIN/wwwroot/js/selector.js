@@ -1,4 +1,40 @@
-﻿document.getElementById('agregarTicketBtn').addEventListener('click', async function () {
+﻿// Función para actualizar los totales de facturación
+function updateTotals() {
+    const tbody = document.querySelector('#ticketsTable tbody');
+    const rows = tbody.querySelectorAll('tr');
+
+    let subtotalSinDesc = 0;
+    let descuentoTotal = 0;
+    let ivaTotal = 0;
+    let iepsTotal = 0;
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        // Asumiendo el siguiente orden:
+        // 0: Ticket, 1: Subtotal, 2: Descuento, 3: IEPS, 4: IVA, 5: Total Venta, 6: Tipo de Pago, 7: Acciones
+        const subtotal = parseFloat(cells[1].textContent) || 0;
+        const descuento = parseFloat(cells[2].textContent) || 0;
+        const ieps = parseFloat(cells[3].textContent) || 0;
+        const iva = parseFloat(cells[4].textContent) || 0;
+
+        subtotalSinDesc += subtotal;
+        descuentoTotal += descuento;
+        iepsTotal += ieps;
+        ivaTotal += iva;
+    });
+
+    const subtotalConDesc = subtotalSinDesc - descuentoTotal;
+    const totalConDesc = subtotalConDesc + ivaTotal + iepsTotal;
+
+    document.getElementById('subtotalSinDesc').textContent = subtotalSinDesc.toFixed(2);
+    document.getElementById('descuentoTotal').textContent = descuentoTotal.toFixed(2);
+    document.getElementById('subtotalConDesc').textContent = subtotalConDesc.toFixed(2);
+    document.getElementById('ivaTotal').textContent = ivaTotal.toFixed(2);
+    document.getElementById('iepsTotal').textContent = iepsTotal.toFixed(2);
+    document.getElementById('totalConDesc').textContent = totalConDesc.toFixed(2);
+}
+
+document.getElementById('agregarTicketBtn').addEventListener('click', async function () {
     const ticket = document.getElementById('ticketInput').value.trim();
     if (!ticket) {
         alert("Por favor, ingrese un número de ticket.");
@@ -13,42 +49,42 @@
 
         const tbody = document.querySelector('#ticketsTable tbody');
 
-        // Si no se encontraron registros, puedes notificar al usuario o agregar una fila informativa
         if (data.length === 0) {
             alert("No se encontró información para el ticket ingresado.");
         } else {
-            // Si se devuelve un array, se agregan todos los registros (puede ser de 1 o más)
             data.forEach(venta => {
                 // Extraer los datos respetando posibles diferencias en mayúsculas/minúsculas
-                const idVenta = venta.idVenta || venta.IdVenta || ticket; // se puede usar el ticket ingresado como fallback
-                const subtotal = venta.subtotal || venta.Subtotal || '';
-                const importeDescuento = venta.importeDescuento || venta.ImporteDescuento || '';
-                const importeIEPS = venta.importeIEPS || venta.ImporteIEPS || '';
-                const importeIVA = venta.importeIVA || venta.ImporteIVA || '';
-                const totalVenta = venta.totalVenta || venta.TotalVenta || '';
+                const idVenta = venta.idVenta || venta.IdVenta || ticket;
+                const subtotal = venta.subtotal || venta.Subtotal || '0';
+                const importeDescuento = venta.importeDescuento || venta.ImporteDescuento || '0';
+                const importeIEPS = venta.importeIEPS || venta.ImporteIEPS || '0';
+                const importeIVA = venta.importeIVA || venta.ImporteIVA || '0';
+                const totalVenta = venta.totalVenta || venta.TotalVenta || '0';
                 const tipoPago = venta.tipoPago || venta.TipoPago || '';
 
                 // Crear la nueva fila en la tabla
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-          <td>${idVenta}</td>
-          <td>${subtotal}</td>
-          <td>${importeDescuento}</td>
-          <td>${importeIEPS}</td>
-          <td>${importeIVA}</td>
-          <td>${totalVenta}</td>
-          <td>${tipoPago}</td>
-          <td>
-            <button class="btn btn-sm btn-danger quitarTicketBtn">
-              <i class="bi bi-x-circle"></i> Quitar
-            </button>
-          </td>
-        `;
+                    <td>${idVenta}</td>
+                    <td>${subtotal}</td>
+                    <td>${importeDescuento}</td>
+                    <td>${importeIEPS}</td>
+                    <td>${importeIVA}</td>
+                    <td>${totalVenta}</td>
+                    <td>${tipoPago}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger quitarTicketBtn">
+                            <i class="bi bi-x-circle"></i> Quitar
+                        </button>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
+            // Actualiza los totales después de agregar las filas
+            updateTotals();
         }
 
-        // Opcional: Limpiar el campo de entrada después de agregar
+        // Limpiar el campo de entrada
         document.getElementById('ticketInput').value = '';
     } catch (error) {
         console.error('Error al buscar el ticket:', error);
@@ -60,5 +96,7 @@ document.querySelector('#ticketsTable tbody').addEventListener('click', function
     if (e.target.closest('.quitarTicketBtn')) {
         const fila = e.target.closest('tr');
         fila.parentNode.removeChild(fila);
+        // Actualizar totales después de quitar una fila
+        updateTotals();
     }
 });
