@@ -49,7 +49,7 @@ document.getElementById('agregarTicketBtn').addEventListener('click', async func
 
         const tbody = document.querySelector('#ticketsTable tbody');
 
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
             alert("No se encontró información para el ticket ingresado.");
         } else {
             data.forEach(venta => {
@@ -62,6 +62,9 @@ document.getElementById('agregarTicketBtn').addEventListener('click', async func
                 const totalVenta = venta.totalVenta || venta.TotalVenta || '0';
                 const tipoPago = venta.tipoPago || venta.TipoPago || '';
 
+                // Índice para el binding MVC
+                const index = tbody.querySelectorAll('tr').length;
+
                 // Crear la nueva fila en la tabla
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -73,13 +76,26 @@ document.getElementById('agregarTicketBtn').addEventListener('click', async func
                     <td>${totalVenta}</td>
                     <td>${tipoPago}</td>
                     <td>
-                        <button class="btn btn-sm btn-danger quitarTicketBtn">
+                        <button type="button" class="btn btn-sm btn-danger quitarTicketBtn">
                             <i class="bi bi-x-circle"></i> Quitar
                         </button>
                     </td>
                 `;
+
+                // Campos ocultos para enviar al servidor en List<TicketViewModel> Tickets
+                tr.innerHTML += `
+                    <input type="hidden" name="Tickets[${index}].IdVenta" value="${idVenta}">
+                    <input type="hidden" name="Tickets[${index}].Subtotal" value="${subtotal}">
+                    <input type="hidden" name="Tickets[${index}].ImporteDescuento" value="${importeDescuento}">
+                    <input type="hidden" name="Tickets[${index}].IEPS" value="${importeIEPS}">
+                    <input type="hidden" name="Tickets[${index}].IVA" value="${importeIVA}">
+                    <input type="hidden" name="Tickets[${index}].TotalVenta" value="${totalVenta}">
+                    <input type="hidden" name="Tickets[${index}].TipoPago" value="${tipoPago}">
+                `;
+
                 tbody.appendChild(tr);
             });
+
             // Actualiza los totales después de agregar las filas
             updateTotals();
         }
@@ -88,6 +104,7 @@ document.getElementById('agregarTicketBtn').addEventListener('click', async func
         document.getElementById('ticketInput').value = '';
     } catch (error) {
         console.error('Error al buscar el ticket:', error);
+        alert('Ocurrió un error al consultar el ticket. Revisa la consola para más detalles.');
     }
 });
 
@@ -100,3 +117,4 @@ document.querySelector('#ticketsTable tbody').addEventListener('click', function
         updateTotals();
     }
 });
+    
