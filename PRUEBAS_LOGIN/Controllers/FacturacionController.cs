@@ -161,14 +161,34 @@ namespace PRUEBAS_LOGIN.Controllers
                         {
                             if (dr.Read())
                             {
-                                // Se recuperan los datos necesarios para el formulario, incluyendo RegimenFiscal
+                                // Se recuperan todos los datos para el formulario
                                 EmisorFactura emisor = new EmisorFactura
                                 {
                                     EmisorFacturaId = Convert.ToInt32(dr["EmisorFacturaId"]),
                                     NombreRazonSocial = dr["NombreRazonSocial"].ToString(),
+                                    NombreSucursal = dr["NombreSucursal"].ToString(),
+                                    CURP = dr["CURP"].ToString(),
+                                    Correo = dr["Correo"].ToString(),
                                     RFC = dr["RFC"].ToString(),
+                                    RegimenFiscal = dr["RegimenFiscal"].ToString(),
+                                    CorreoSucursal = dr["CorreoSucursal"].ToString(),
+                                    NumeroSucursal = dr["NumeroSucursal"] != DBNull.Value ? Convert.ToInt32(dr["NumeroSucursal"]) : (int?)null,
+                                    RFCVentasAlMenudeo = dr["RFCVentasAlMenudeo"].ToString(),
+                                    CorreoVentas = dr["CorreoVentas"].ToString(),
+                                    Telefono = dr["Telefono"].ToString(),
+                                    TipoDistribucion = dr["TipoDistribucion"].ToString(),
+                                    LugarExpedicion = dr["LugarExpedicion"].ToString(),
+                                    SerieFactura = dr["SerieFactura"].ToString(),
+                                    Calle = dr["Calle"].ToString(),
+                                    NumeroExterior = dr["NumeroExterior"].ToString(),
+                                    NumeroInterior = dr["NumeroInterior"] == DBNull.Value ? null : dr["NumeroInterior"].ToString(),
                                     CodigoPostal = dr["CodigoPostal"] != DBNull.Value ? Convert.ToInt32(dr["CodigoPostal"]) : (int?)null,
-                                    RegimenFiscal = dr["RegimenFiscal"].ToString()
+                                    Localidad = dr["Localidad"].ToString(),
+                                    Colonia = dr["Colonia"].ToString(),
+                                    DelegacionMunicipio = dr["DelegacionMunicipio"].ToString(),
+                                    Estado = dr["Estado"].ToString(),
+                                    Pais = dr["Pais"].ToString(),
+                                    Referencia = dr["Referencia"].ToString()
                                 };
                                 ViewBag.Emisor = emisor;
                             }

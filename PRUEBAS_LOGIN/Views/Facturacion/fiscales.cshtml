@@ -651,7 +651,9 @@
                                         <!-- Emisor -->
                                         <div class="card mb-4">
                                             <div class="card-header bg-primary text-white"><h5 class="mb-0">Emisor</h5></div>
+                                            <br />
                                             <div class="card-body">
+                                                <!-- Fila 1: RFC y Nombre/Razón Social (visibles) -->
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label for="emisorRFC" class="form-label">RFC</label>
@@ -664,9 +666,11 @@
                                                                value="@ViewBag.Emisor?.NombreRazonSocial" readonly>
                                                     </div>
                                                 </div>
+
+                                                <!-- Fila 2: C.P. y Régimen Fiscal (visibles) -->
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="emisorCP" class="form-label">C.P</label>
+                                                        <label for="emisorCP" class="form-label">C.P.</label>
                                                         <input type="text" class="form-control" id="emisorCP" name="EmisorCP"
                                                                value="@(ViewBag.Emisor?.CodigoPostal?.ToString() ?? "")" readonly>
                                                     </div>
@@ -676,6 +680,135 @@
                                                                value="@ViewBag.Emisor?.RegimenFiscal" readonly>
                                                     </div>
                                                 </div>
+
+                                                <!-- Todas las filas siguientes se ocultan, pero conservan los inputs para el envío -->
+                                                <!-- Fila 3 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorFacturaId" name="EmisorFacturaId"
+                                                               value="@ViewBag.Emisor?.EmisorFacturaId" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorNombreSucursal" name="NombreSucursal"
+                                                               value="@ViewBag.Emisor?.NombreSucursal" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 4 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorCURP" name="CURP"
+                                                               value="@ViewBag.Emisor?.CURP" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorCorreo" name="Correo"
+                                                               value="@ViewBag.Emisor?.Correo" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 5 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorCorreoSucursal" name="CorreoSucursal"
+                                                               value="@ViewBag.Emisor?.CorreoSucursal" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorNumeroSucursal" name="NumeroSucursal"
+                                                               value="@ViewBag.Emisor?.NumeroSucursal" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 6 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorRFCVentasAlMenudeo" name="RFCVentasAlMenudeo"
+                                                               value="@ViewBag.Emisor?.RFCVentasAlMenudeo" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorCorreoVentas" name="CorreoVentas"
+                                                               value="@ViewBag.Emisor?.CorreoVentas" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 7 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorTelefono" name="Telefono"
+                                                               value="@ViewBag.Emisor?.Telefono" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorTipoDistribucion" name="TipoDistribucion"
+                                                               value="@ViewBag.Emisor?.TipoDistribucion" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 8 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorLugarExpedicion" name="LugarExpedicion"
+                                                               value="@ViewBag.Emisor?.LugarExpedicion" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorSerieFactura" name="SerieFactura"
+                                                               value="@ViewBag.Emisor?.SerieFactura" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 9 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorCalle" name="Calle"
+                                                               value="@ViewBag.Emisor?.Calle" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorNumeroExterior" name="NumeroExterior"
+                                                               value="@ViewBag.Emisor?.NumeroExterior" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 10 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorNumeroInterior" name="NumeroInterior"
+                                                               value="@ViewBag.Emisor?.NumeroInterior" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorLocalidad" name="Localidad"
+                                                               value="@ViewBag.Emisor?.Localidad" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 11 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorColonia" name="Colonia"
+                                                               value="@ViewBag.Emisor?.Colonia" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorDelegacionMunicipio" name="DelegacionMunicipio"
+                                                               value="@ViewBag.Emisor?.DelegacionMunicipio" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 12 -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorEstado" name="Estado"
+                                                               value="@ViewBag.Emisor?.Estado" readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="text" id="emisorPais" name="Pais"
+                                                               value="@ViewBag.Emisor?.Pais" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Fila 13: Referencia -->
+                                                <div class="row d-none">
+                                                    <div class="col-md-12 mb-3">
+                                                        <input type="text" id="emisorReferencia" name="Referencia"
+                                                               value="@ViewBag.Emisor?.Referencia" readonly>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -683,6 +816,7 @@
                                         <div class="card mb-4">
                                             <div class="card-header bg-secondary text-white"><h5 class="mb-0">Receptor</h5></div>
                                             <div class="card-body">
+                                                <br />
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
                                                         <label for="receptorRFC" class="form-label">RFC</label>
@@ -803,6 +937,7 @@
                                         <div class="card mb-4">
                                             <div class="card-header bg-info text-white"><h5 class="mb-0">Información de Pago</h5></div>
                                             <div class="card-body">
+                                                <br />
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
                                                         <label for="metodoPago" class="form-label">Método de Pago</label>
@@ -852,7 +987,10 @@
 
                                         <!-- Tickets a Facturar -->
                                         <div class="card mb-4">
-                                            <div class="card-header bg-warning"><h5 class="mb-0">Tickets a Facturar</h5></div>
+                                            <div class="card-header bg-warning">
+                                                <h5 class="mb-0">Tickets a Facturar</h5>
+                                                </div>
+                                            <br />
                                             <div class="card-body">
                                                 <div class="mb-3">
                                                     <label for="ticketInput" class="form-label">Número de Ticket</label>
